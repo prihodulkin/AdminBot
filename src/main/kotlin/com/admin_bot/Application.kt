@@ -1,6 +1,6 @@
-package com.admin_bot.main
+package com.admin_bot
 
-import com.admin_bot.config.mock.MockConfig
+import com.admin_bot.config.MockConfig
 
 
 fun main() {

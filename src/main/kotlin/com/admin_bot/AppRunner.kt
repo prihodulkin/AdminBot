@@ -1,5 +1,6 @@
-package com.admin_bot.main
+package com.admin_bot
 
+import com.admin_bot.config.AppConfig
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 

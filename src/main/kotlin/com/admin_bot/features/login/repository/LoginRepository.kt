@@ -21,6 +21,7 @@ abstract class LoginRepository {
         }
     }
 
+    abstract suspend fun clear()
     protected abstract suspend fun loginWithEmail(email: String, password: String): Boolean
     protected abstract suspend fun loginWithAccessToken(accessToken: String, password: String): Boolean
 }

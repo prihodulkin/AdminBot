@@ -1,4 +1,4 @@
-package com.admin_bot.features.register.data
+package com.admin_bot.features.registration.data
 
 import kotlinx.serialization.Serializable
 

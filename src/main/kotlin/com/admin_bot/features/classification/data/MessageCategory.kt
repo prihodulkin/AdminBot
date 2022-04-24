@@ -1,9 +1,9 @@
-package com.admin_bot.features.classify.data
+package com.admin_bot.features.classification.data
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-enum class Category {
+enum class MessageCategory {
     GOOD,
     BAD,
     NONE

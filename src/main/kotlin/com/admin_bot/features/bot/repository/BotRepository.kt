@@ -6,13 +6,11 @@ import com.admin_bot.features.classification.data.MessageCategory
 
 interface BotRepository {
     suspend fun getBotInfo(botId: Int): BotInfo
-    suspend fun addBot(accessToken: String): Int
-    suspend fun deleteBot(botId: Int)
     suspend fun addAdminEmail(botId: Int, email: String)
     suspend fun addChat(botId: Int, chatId: Int)
     suspend fun deleteChat(botId: Int, chatId: Int)
 
-    suspend fun setAction(messagesCategory: MessageCategory, botAction: BotAction)
+    suspend fun setAction(messagesCategory: MessageCategory, botAction: BotAction, botId: Int)
 
     suspend fun clear()
 }

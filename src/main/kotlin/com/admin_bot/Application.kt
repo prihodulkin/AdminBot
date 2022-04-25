@@ -1,9 +1,9 @@
 package com.admin_bot
 
-import com.admin_bot.config.MockConfig
+import com.admin_bot.enviroment.MockEnvironment
 
 
 fun main() {
-    val appRunner = AppRunner(MockConfig())
+    val appRunner = AppRunner(MockEnvironment())
     appRunner.runApp()
 }

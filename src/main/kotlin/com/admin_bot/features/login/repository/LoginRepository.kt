@@ -5,7 +5,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 
 abstract class LoginRepository {
-    suspend fun login(loginParams: LoginParams): Boolean = coroutineScope {
+    suspend fun login(loginParams: LoginParams): Int? = coroutineScope {
         val hasEmail = loginParams.email != null
         val hasAccessToken = loginParams.accessToken != null
         if (hasEmail && hasAccessToken) {
@@ -21,7 +21,6 @@ abstract class LoginRepository {
         }
     }
 
-    abstract suspend fun clear()
-    protected abstract suspend fun loginWithEmail(email: String, password: String): Boolean
-    protected abstract suspend fun loginWithAccessToken(accessToken: String, password: String): Boolean
+    protected abstract suspend fun loginWithEmail(email: String, password: String): Int?
+    protected abstract suspend fun loginWithAccessToken(accessToken: String, password: String): Int?
 }

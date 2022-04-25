@@ -1,0 +1,37 @@
+package com.admin_bot.core.mocks.repository
+
+import com.admin_bot.core.mocks.MockDatabase
+import com.admin_bot.core.mocks.MockGlobals
+import com.admin_bot.features.bot.data.BotInfo
+import com.admin_bot.features.registration.data.CompleteRegisterParams
+import com.admin_bot.features.registration.data.EmailConfirmationParams
+import com.admin_bot.features.registration.data.RegisterParams
+import com.admin_bot.features.registration.repository.RegistrationRepository
+
+class MockRegistrationRepository(private val mockDatabase: MockDatabase) : RegistrationRepository {
+    override suspend fun register(registerParams: RegisterParams): Int? {
+        val bots = mockDatabase!!.bots!!
+        val botInfo = bots.firstOrNull { bot -> bot.accessToken == registerParams.accessToken }
+        if (botInfo != null) {
+            return null
+        }
+        val id = bots.size
+        bots.add(BotInfo(id = id, accessToken = registerParams.accessToken))
+        return id
+    }
+
+    override suspend fun sendOtp(completeRegisterParams: CompleteRegisterParams, botId: Int) {
+        val otp = mockDatabase.oneTimePasswords!!
+        otp[botId] = MockGlobals.otp.toString()
+    }
+
+    override suspend fun verifyOtp(emailConfirmationParams: EmailConfirmationParams, botId: Int): Boolean {
+        val otp = mockDatabase.oneTimePasswords!!
+        return otp[botId] == emailConfirmationParams.otp
+    }
+
+    override suspend fun unregister(botId: Int): Boolean {
+        val bots = mockDatabase!!.bots!!
+        return bots.removeIf { bot -> bot.id == botId }
+    }
+}

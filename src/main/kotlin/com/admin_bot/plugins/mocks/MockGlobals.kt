@@ -1,4 +1,4 @@
-package com.admin_bot.core.mocks
+package com.admin_bot.plugins.mocks
 
 class MockGlobals {
     companion object{

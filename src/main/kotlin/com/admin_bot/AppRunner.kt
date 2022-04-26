@@ -1,12 +1,25 @@
 package com.admin_bot
 
-import com.admin_bot.enviroment.AppEnvironment
-import io.ktor.server.engine.*
-import io.ktor.server.netty.*
+import com.admin_bot.environment.AppEnvironment
+import com.admin_bot.environment.MockEnvironment
+import com.admin_bot.features.registration.route.registrationRouting
+import com.admin_bot.plugins.mocks.database.MockDatabase
+import io.ktor.serialization.kotlinx.json.*
+import io.ktor.server.application.*
+import io.ktor.server.plugins.contentnegotiation.*
+import io.ktor.server.routing.*
 
-class AppRunner(val config : AppEnvironment) {
-    fun runApp(){
-        embeddedServer(Netty, port = 8080, host = "0.0.0.0") {
-        }.start(wait = true)
+fun Application.run(appEnvironment: AppEnvironment) {
+    install(ContentNegotiation) {
+        json()
     }
+    routing {
+        registrationRouting(appEnvironment)
+    }
+
+}
+
+fun Application.runWithMockEnvironment(mockDatabase: MockDatabase) {
+    val mockEnvironment = MockEnvironment(mockDatabase)
+    run(mockEnvironment)
 }

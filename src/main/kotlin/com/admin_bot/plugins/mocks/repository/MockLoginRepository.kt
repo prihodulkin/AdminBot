@@ -1,6 +1,6 @@
-package com.admin_bot.core.mocks.repository
+package com.admin_bot.plugins.mocks.repository
 
-import com.admin_bot.core.mocks.MockDatabase
+import com.admin_bot.plugins.mocks.database.MockDatabase
 import com.admin_bot.features.login.repository.LoginRepository
 
 class MockLoginRepository(private val mockDatabase: MockDatabase) : LoginRepository() {

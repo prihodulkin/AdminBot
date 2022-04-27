@@ -1,4 +1,4 @@
-package com.admin_bot.features.registration.repository
+package com.admin_bot.features.registration.model
 
 import com.admin_bot.features.registration.data.CompleteRegisterParams
 import com.admin_bot.features.registration.data.EmailConfirmationParams

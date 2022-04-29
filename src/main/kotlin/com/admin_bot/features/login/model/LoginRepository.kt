@@ -1,4 +1,4 @@
-package com.admin_bot.features.login.repository
+package com.admin_bot.features.login.model
 
 import com.admin_bot.features.login.data.LoginParams
 import kotlinx.coroutines.async

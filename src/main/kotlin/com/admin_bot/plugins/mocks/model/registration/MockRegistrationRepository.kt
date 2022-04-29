@@ -1,4 +1,4 @@
-package com.admin_bot.plugins.mocks.repository
+package com.admin_bot.plugins.mocks.model.registration
 
 import com.admin_bot.plugins.mocks.database.MockDatabase
 import com.admin_bot.plugins.mocks.MockGlobals

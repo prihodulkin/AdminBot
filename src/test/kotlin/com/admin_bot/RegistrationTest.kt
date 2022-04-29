@@ -2,8 +2,11 @@ package com.admin_bot
 
 import com.admin_bot.features.bot.data.BotInfo
 import com.admin_bot.features.registration.data.RegisterParams
-import com.admin_bot.helpers.ResponseText
+import com.admin_bot.environment.config.ResponseText
+import com.admin_bot.features.authentification.data.AuthTokens
 import com.admin_bot.plugins.mocks.database.MockDatabase
+import com.admin_bot.plugins.mocks.model.authentication.MockAuthenticationRepository
+import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
@@ -26,6 +29,7 @@ class RegistrationTest {
             setBody(RegisterParams(accessToken = "token", password = "Qwerty123"))
         }
         assertEquals(HttpStatusCode.Created, response.status)
+        assertEquals(MockAuthenticationRepository.authTokens, response.body())
     }
 
     @Test

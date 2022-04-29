@@ -1,7 +1,7 @@
-package com.admin_bot.plugins.mocks.repository
+package com.admin_bot.plugins.mocks.model.login
 
 import com.admin_bot.plugins.mocks.database.MockDatabase
-import com.admin_bot.features.login.repository.LoginRepository
+import com.admin_bot.features.login.model.LoginRepository
 
 class MockLoginRepository(private val mockDatabase: MockDatabase) : LoginRepository() {
     override suspend fun loginWithEmail(email: String, password: String): Int? {

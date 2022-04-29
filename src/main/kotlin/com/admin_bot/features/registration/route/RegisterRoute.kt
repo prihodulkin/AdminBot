@@ -1,8 +1,8 @@
 package com.admin_bot.features.registration.route
 
+import com.admin_bot.environment.config.ResponseText
 import com.admin_bot.environment.AppEnvironment
 import com.admin_bot.features.registration.data.RegisterParams
-import com.admin_bot.helpers.ResponseText
 import com.admin_bot.helpers.handleCommonErrors
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -15,6 +15,7 @@ import kotlinx.coroutines.withContext
 
 fun Route.registerRoute(appEnvironment: AppEnvironment) {
     val registrationRepository = appEnvironment.registrationRepository
+    val authenticationRepository = appEnvironment.authenticationRepository
     val validator = appEnvironment.passwordValidator
     route("/register") {
         post {
@@ -30,7 +31,12 @@ fun Route.registerRoute(appEnvironment: AppEnvironment) {
                 if (id == null) {
                     call.respond(HttpStatusCode.Conflict, ResponseText.accessTokenIsAlreadyUsed)
                 } else {
-                    call.respond(HttpStatusCode.Created)
+                    val serverConfig = appEnvironment.serverConfig
+                    val authTokens =
+                        withContext(Dispatchers.Default) {
+                            authenticationRepository.generateTokens(serverConfig, id)
+                        }
+                    call.respond(HttpStatusCode.Created, authTokens)
                 }
             }
         }

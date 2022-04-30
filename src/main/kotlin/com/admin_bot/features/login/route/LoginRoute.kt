@@ -3,7 +3,7 @@ package com.admin_bot.features.login.route
 import com.admin_bot.environment.AppEnvironment
 import com.admin_bot.environment.config.ResponseText
 import com.admin_bot.features.login.data.LoginParams
-import com.admin_bot.helpers.handleCommonErrors
+import com.admin_bot.features.helpers.handleCommonErrors
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -14,7 +14,7 @@ import kotlinx.coroutines.withContext
 
 fun Route.loginRoute(appEnvironment: AppEnvironment) {
     val loginRepository = appEnvironment.loginRepository
-    val authenticationRepository = appEnvironment.jwtAuthenticator
+    val jwtAuthenticator = appEnvironment.jwtAuthenticator
     route("/login") {
         post {
             handleCommonErrors {
@@ -27,7 +27,7 @@ fun Route.loginRoute(appEnvironment: AppEnvironment) {
                     val serverConfig = appEnvironment.serverConfig
                     val authTokens =
                         withContext(Dispatchers.Default) {
-                            authenticationRepository.generateTokens(serverConfig, botId)
+                            jwtAuthenticator.generateTokens(serverConfig, botId)
                         }
                     call.respond(HttpStatusCode.OK, authTokens)
                 }

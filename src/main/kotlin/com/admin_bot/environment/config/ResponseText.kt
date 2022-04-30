@@ -11,5 +11,7 @@ class ResponseText {
         const val loginFailed = "Login has failed because of wrong email (accessToken) or password"
         const val useOnlyEmailOrAccessTokenForLogin = "You shouldn't use both email and access token for login"
         const val useEmailOrAccessTokenForLogin = "You should send 'email' or 'accessToken' parameters"
+        const val incorrectRefreshToken = "Refresh token is incorrect"
+        const val refreshTokenIsExpired =  "Refresh token is expired"
     }
 }

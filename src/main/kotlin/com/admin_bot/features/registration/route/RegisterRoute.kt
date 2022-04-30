@@ -3,7 +3,7 @@ package com.admin_bot.features.registration.route
 import com.admin_bot.environment.config.ResponseText
 import com.admin_bot.environment.AppEnvironment
 import com.admin_bot.features.registration.data.RegisterParams
-import com.admin_bot.helpers.handleCommonErrors
+import com.admin_bot.features.helpers.handleCommonErrors
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -15,7 +15,7 @@ import kotlinx.coroutines.withContext
 
 fun Route.registerRoute(appEnvironment: AppEnvironment) {
     val registrationRepository = appEnvironment.registrationRepository
-    val authenticationRepository = appEnvironment.jwtAuthenticator
+    val jwtAuthenticator = appEnvironment.jwtAuthenticator
     val validator = appEnvironment.passwordValidator
     route("/register") {
         post {
@@ -34,7 +34,7 @@ fun Route.registerRoute(appEnvironment: AppEnvironment) {
                     val serverConfig = appEnvironment.serverConfig
                     val authTokens =
                         withContext(Dispatchers.Default) {
-                            authenticationRepository.generateTokens(serverConfig, botId)
+                            jwtAuthenticator.generateTokens(serverConfig, botId)
                         }
                     call.respond(HttpStatusCode.Created, authTokens)
                 }

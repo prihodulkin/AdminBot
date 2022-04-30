@@ -1,4 +1,4 @@
-package com.admin_bot.helpers
+package com.admin_bot.features.helpers
 
 import com.admin_bot.environment.config.ResponseText
 import io.ktor.http.*

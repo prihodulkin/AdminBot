@@ -23,8 +23,7 @@ class MockJwtAuthenticator(private val mockAuthTokens: Boolean = true) : JwtAuth
         }
     }
 
-    override suspend fun validateRefreshTokenAndRemoveOnSuccess(refreshToken: String): Boolean {
-        val botId = refreshToken.split(' ').first().toInt()
+    override suspend fun deleteRefreshTokenIfContains(refreshToken: String, botId: Int): Boolean {
         val refreshTokensSet = refreshTokens[botId]
         if (refreshTokensSet?.contains(refreshToken) == true) {
             refreshTokensSet.remove(refreshToken)

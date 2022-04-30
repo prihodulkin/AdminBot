@@ -15,7 +15,7 @@ import kotlinx.coroutines.withContext
 
 fun Route.registerRoute(appEnvironment: AppEnvironment) {
     val registrationRepository = appEnvironment.registrationRepository
-    val authenticationRepository = appEnvironment.authenticationRepository
+    val authenticationRepository = appEnvironment.jwtAuthenticator
     val validator = appEnvironment.passwordValidator
     route("/register") {
         post {
@@ -25,16 +25,16 @@ fun Route.registerRoute(appEnvironment: AppEnvironment) {
                     call.respond(HttpStatusCode.BadRequest, ResponseText.incorrectPassword)
                     return@handleCommonErrors
                 }
-                val id = withContext(Dispatchers.Default) {
+                val botId = withContext(Dispatchers.Default) {
                     registrationRepository.register(registerParams)
                 }
-                if (id == null) {
+                if (botId == null) {
                     call.respond(HttpStatusCode.Conflict, ResponseText.accessTokenIsAlreadyUsed)
                 } else {
                     val serverConfig = appEnvironment.serverConfig
                     val authTokens =
                         withContext(Dispatchers.Default) {
-                            authenticationRepository.generateTokens(serverConfig, id)
+                            authenticationRepository.generateTokens(serverConfig, botId)
                         }
                     call.respond(HttpStatusCode.Created, authTokens)
                 }

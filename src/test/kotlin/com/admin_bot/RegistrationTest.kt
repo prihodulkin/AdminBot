@@ -3,9 +3,8 @@ package com.admin_bot
 import com.admin_bot.features.bot.data.BotInfo
 import com.admin_bot.features.registration.data.RegisterParams
 import com.admin_bot.environment.config.ResponseText
-import com.admin_bot.features.authentification.data.AuthTokens
 import com.admin_bot.plugins.mocks.database.MockDatabase
-import com.admin_bot.plugins.mocks.model.authentication.MockAuthenticationRepository
+import com.admin_bot.plugins.mocks.model.authentication.MockJwtAuthenticator
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
@@ -26,10 +25,10 @@ class RegistrationTest {
         val client = createJsonClient()
         val response = client.post("/register") {
             contentType(ContentType.Application.Json)
-            setBody(RegisterParams(accessToken = "token", password = "Qwerty123"))
+            setBody(RegisterParams(token = "token", password = "Qwerty123"))
         }
         assertEquals(HttpStatusCode.Created, response.status)
-        assertEquals(MockAuthenticationRepository.authTokens, response.body())
+        assertEquals(MockJwtAuthenticator.authTokens, response.body())
     }
 
     @Test
@@ -56,7 +55,7 @@ class RegistrationTest {
         val client = createJsonClient()
         val response = client.post("/register") {
             contentType(ContentType.Application.Json)
-            setBody(RegisterParams(accessToken = "token", password = "Qwerty123"))
+            setBody(RegisterParams(token = "token", password = "Qwerty123"))
         }
         assertEquals(HttpStatusCode.InternalServerError, response.status)
         assertEquals(ResponseText.internalError, response.bodyAsText())
@@ -72,7 +71,7 @@ class RegistrationTest {
         suspend fun testIncorrectPassword(password: String) {
             var response = client.post("/register") {
                 contentType(ContentType.Application.Json)
-                setBody(RegisterParams(accessToken = "token", password = password))
+                setBody(RegisterParams(token = "token", password = password))
             }
             assertEquals(HttpStatusCode.BadRequest, response.status)
             assertEquals(ResponseText.incorrectPassword, response.bodyAsText())
@@ -84,7 +83,7 @@ class RegistrationTest {
     }
 
     @Test
-    fun testRegistrationWithAlreadyUsedAccessToken() = testApplication {
+    fun testRegistrationWithAlreadyUsedToken() = testApplication {
         val mockDatabase = MockDatabase(bots = mutableListOf(BotInfo(1,"token")))
         application {
             runWithMockEnvironment(mockDatabase)
@@ -92,7 +91,7 @@ class RegistrationTest {
         val client = createJsonClient()
         val response = client.post("/register") {
             contentType(ContentType.Application.Json)
-            setBody(RegisterParams(accessToken = "token", password = "Qwerty123"))
+            setBody(RegisterParams(token = "token", password = "Qwerty123"))
         }
         assertEquals(HttpStatusCode.Conflict, response.status)
         assertEquals(ResponseText.accessTokenIsAlreadyUsed, response.bodyAsText())

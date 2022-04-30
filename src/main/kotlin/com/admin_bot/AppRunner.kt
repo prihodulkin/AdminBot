@@ -1,6 +1,7 @@
 package com.admin_bot
 
 import com.admin_bot.environment.AppEnvironment
+import com.admin_bot.features.login.route.loginRoute
 import com.admin_bot.features.registration.route.registrationRouting
 import com.admin_bot.plugins.mocks.MockEnvironment
 import com.admin_bot.plugins.mocks.database.MockDatabase
@@ -39,6 +40,7 @@ fun Application.run(appEnvironment: AppEnvironment) {
     }
     routing {
         registrationRouting(appEnvironment)
+        loginRoute(appEnvironment)
     }
 
 }

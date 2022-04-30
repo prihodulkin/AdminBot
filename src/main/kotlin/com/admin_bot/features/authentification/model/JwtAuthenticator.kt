@@ -8,7 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.sql.Date
 
-abstract class AuthenticationRepository {
+abstract class JwtAuthenticator {
     companion object {
         const val botIdClaim = "botId"
         const val refreshTokenLength = 100

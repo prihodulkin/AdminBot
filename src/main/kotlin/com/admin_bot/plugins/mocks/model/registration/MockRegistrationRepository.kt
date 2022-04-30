@@ -11,12 +11,12 @@ import com.admin_bot.features.registration.model.RegistrationRepository
 class MockRegistrationRepository(private val mockDatabase: MockDatabase) : RegistrationRepository {
     override suspend fun register(registerParams: RegisterParams): Int? {
         val bots = mockDatabase!!.bots!!
-        val botInfo = bots.firstOrNull { bot -> bot.accessToken == registerParams.accessToken }
+        val botInfo = bots.firstOrNull { bot -> bot.token == registerParams.token }
         if (botInfo != null) {
             return null
         }
         val id = bots.size
-        bots.add(BotInfo(id = id, accessToken = registerParams.accessToken))
+        bots.add(BotInfo(id = id, token = registerParams.token))
         return id
     }
 

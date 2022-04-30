@@ -8,5 +8,8 @@ class ResponseText {
         const val accessTokenIsAlreadyUsed = "The submitted access token is already in use by another bot"
         const val emailAlreadyUsed = "The submitted email is already in use by another bot"
         const val accessTokenValidationFailed = "Token is not valid or has expired"
+        const val loginFailed = "Login has failed because of wrong email (accessToken) or password"
+        const val useOnlyEmailOrAccessTokenForLogin = "You shouldn't use both email and access token for login"
+        const val useEmailOrAccessTokenForLogin = "You should send 'email' or 'accessToken' parameters"
     }
 }

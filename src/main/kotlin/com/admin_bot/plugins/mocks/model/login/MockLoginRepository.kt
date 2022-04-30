@@ -11,7 +11,7 @@ class MockLoginRepository(private val mockDatabase: MockDatabase) : LoginReposit
     }
 
     override suspend fun loginWithAccessToken(accessToken: String, password: String): Int? {
-        val botInfo = mockDatabase.bots!!.firstOrNull { bot -> bot.accessToken == accessToken }
+        val botInfo = mockDatabase.bots!!.firstOrNull { bot -> bot.token == accessToken }
             ?: return null
         return if (mockDatabase.botPasswords!![botInfo.id] == password) botInfo.id else null
     }

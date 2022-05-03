@@ -1,10 +1,13 @@
 package com.admin_bot.features.authentification.model
 
-import com.admin_bot.environment.config.ResponseText
-import com.admin_bot.environment.config.ServerConfig
+import com.admin_bot.common.AppException
+import com.admin_bot.common.ExpiredException
+import com.admin_bot.config.ResponseText
+import com.admin_bot.config.ServerConfig
 import com.admin_bot.features.authentification.data.AuthTokens
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import io.ktor.http.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
@@ -54,13 +57,19 @@ abstract class JwtAuthenticator {
      * Throws [ExpiredException] if refresh token is expired
      */
     suspend fun validateRefreshTokenAndRemoveOnSuccess(refreshToken: String): Pair<Boolean, Int?> {
-        val parsedToken = refreshToken.split(' ')
-        val botId = parsedToken.first().toInt()
-        if (deleteRefreshTokenIfContains(refreshToken, botId)) {
-            checkIsRefreshTokenExpired(parsedToken[1])
-            return Pair(true, botId)
+        try {
+            val parsedToken = refreshToken.split(' ')
+            val botId = parsedToken.first().toInt()
+            if (deleteRefreshTokenIfContains(refreshToken, botId)) {
+                checkIsRefreshTokenExpired(parsedToken[1])
+                return Pair(true, botId)
+            }
+            return Pair(false, null)
+        } catch (e: ExpiredException) {
+            throw e
+        } catch (e: Exception) {
+            throw RefreshTokenIncorrectFormatException(ResponseText.incorrectRefreshToken)
         }
-        return Pair(false, null)
     }
 
     /**
@@ -68,8 +77,8 @@ abstract class JwtAuthenticator {
      */
     private fun checkIsRefreshTokenExpired(refreshTokenExpiresDateString: String) {
         val expiresDateTime = Instant.parse(refreshTokenExpiresDateString)
-        if (expiresDateTime > Clock.System.now()) {
-            throw ExpiredException(ResponseText.refreshTokenIsExpired)
+        if (expiresDateTime < Clock.System.now()) {
+            throw ExpiredException(HttpStatusCode.Unauthorized, ResponseText.refreshTokenIsExpired)
         }
     }
 
@@ -82,9 +91,17 @@ abstract class JwtAuthenticator {
 
 }
 
-class ExpiredException : Exception {
-    constructor() : super()
-    constructor(message: String) : super(message)
-    constructor(message: String, cause: Throwable) : super(message, cause)
-    constructor(cause: Throwable) : super(cause)
+
+class RefreshTokenIncorrectFormatException : AppException {
+    companion object {
+        val statusCode = HttpStatusCode.Unauthorized
+    }
+
+    override val statusCode = RefreshTokenIncorrectFormatException.statusCode
+
+    constructor() : super(RefreshTokenIncorrectFormatException.statusCode)
+    constructor(message: String) : super(RefreshTokenIncorrectFormatException.statusCode, message)
+    constructor(message: String, cause: Throwable) : super(RefreshTokenIncorrectFormatException.statusCode, message, cause)
+    constructor(cause: Throwable) : super(RefreshTokenIncorrectFormatException.statusCode, cause)
 }
+

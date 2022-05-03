@@ -1,9 +1,9 @@
 package com.admin_bot.features.authentification.route
 
 import com.admin_bot.environment.AppEnvironment
-import com.admin_bot.environment.config.ResponseText
+import com.admin_bot.config.ResponseText
 import com.admin_bot.features.helpers.handleCommonErrors
-import com.admin_bot.features.registration.data.JwtRefreshParams
+import com.admin_bot.features.authentification.data.JwtRefreshParams
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*

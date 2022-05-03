@@ -1,7 +1,7 @@
 package com.admin_bot.runner
 
 import com.admin_bot.environment.AppEnvironment
-import com.admin_bot.environment.config.configureJwtAuthentication
+import com.admin_bot.config.configureJwtAuthentication
 import com.admin_bot.features.authentification.route.refreshRoute
 import com.admin_bot.features.login.route.loginRoute
 import com.admin_bot.features.registration.route.registrationRouting

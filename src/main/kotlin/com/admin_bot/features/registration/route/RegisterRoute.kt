@@ -1,6 +1,6 @@
 package com.admin_bot.features.registration.route
 
-import com.admin_bot.environment.config.ResponseText
+import com.admin_bot.config.ResponseText
 import com.admin_bot.environment.AppEnvironment
 import com.admin_bot.features.registration.data.RegisterParams
 import com.admin_bot.features.helpers.handleCommonErrors

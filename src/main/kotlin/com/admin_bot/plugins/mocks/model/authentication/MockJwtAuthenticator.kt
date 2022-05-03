@@ -1,10 +1,10 @@
 package com.admin_bot.plugins.mocks.model.authentication
 
-import com.admin_bot.environment.config.ServerConfig
+import com.admin_bot.config.ServerConfig
 import com.admin_bot.features.authentification.data.AuthTokens
 import com.admin_bot.features.authentification.model.JwtAuthenticator
 
-class MockJwtAuthenticator(private val mockAuthTokens: Boolean = true) : JwtAuthenticator() {
+class MockJwtAuthenticator(private val useMockAuthTokens: Boolean = true) : JwtAuthenticator() {
     companion object {
         val authTokens = AuthTokens("accessToken", "refreshToken")
     }
@@ -12,7 +12,7 @@ class MockJwtAuthenticator(private val mockAuthTokens: Boolean = true) : JwtAuth
     private val refreshTokens: MutableMap<Int, MutableSet<String>> = mutableMapOf()
 
     override suspend fun generateTokens(serverConfig: ServerConfig, botId: Int): AuthTokens {
-        return if (mockAuthTokens) authTokens else super.generateTokens(serverConfig, botId)
+        return if (useMockAuthTokens) authTokens else super.generateTokens(serverConfig, botId)
     }
 
     override suspend fun saveRefreshToken(refreshToken: String, botId: Int) {

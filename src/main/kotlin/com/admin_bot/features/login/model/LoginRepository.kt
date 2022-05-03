@@ -1,6 +1,6 @@
 package com.admin_bot.features.login.model
 
-import com.admin_bot.environment.config.ResponseText
+import com.admin_bot.config.ResponseText
 import com.admin_bot.features.login.data.LoginParams
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope

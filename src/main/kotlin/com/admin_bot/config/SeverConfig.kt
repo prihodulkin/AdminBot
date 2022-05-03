@@ -1,4 +1,4 @@
-package com.admin_bot.environment.config
+package com.admin_bot.config
 
 import kotlin.time.Duration
 

@@ -1,8 +1,8 @@
 package com.admin_bot.plugins.mocks
 
 import com.admin_bot.environment.AppEnvironment
-import com.admin_bot.environment.config.JwtConfig
-import com.admin_bot.environment.config.ServerConfig
+import com.admin_bot.config.JwtConfig
+import com.admin_bot.config.ServerConfig
 import com.admin_bot.features.authentification.model.JwtAuthenticator
 import com.admin_bot.features.helpers.Validators
 import com.admin_bot.features.login.model.LoginRepository
@@ -17,7 +17,7 @@ import kotlin.time.toDuration
 
 class MockEnvironment(
     mockDatabase: MockDatabase,
-    val useMockAuthToken: Boolean = true,
+    val useMockAuthTokens: Boolean = true,
     mockServerConfig: ServerConfig? = null
 ) : AppEnvironment {
     companion object {
@@ -36,12 +36,15 @@ class MockEnvironment(
     override val passwordValidator = Validators.Companion::validatePassword
     override val registrationRepository: RegistrationRepository
     override val loginRepository: LoginRepository
-    override val jwtAuthenticator: JwtAuthenticator = MockJwtAuthenticator()
+    override val jwtAuthenticator: JwtAuthenticator
 
     init {
         serverConfig = mockServerConfig ?: defaultMockServerConfig
         registrationRepository = MockRegistrationRepository(mockDatabase)
         loginRepository = MockLoginRepository(mockDatabase)
+        jwtAuthenticator = MockJwtAuthenticator(useMockAuthTokens)
     }
+
+
 
 }

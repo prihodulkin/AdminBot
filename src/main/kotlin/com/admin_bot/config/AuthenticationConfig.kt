@@ -1,4 +1,4 @@
-package com.admin_bot.environment.config
+package com.admin_bot.config
 
 import com.admin_bot.environment.AppEnvironment
 import com.auth0.jwt.JWT
@@ -23,8 +23,15 @@ fun Application.configureJwtAuthentication(appEnvironment: AppEnvironment){
                     .withIssuer(issuer)
                     .build()
             )
+            validate { credential -> null
+                if (credential.payload.getClaim("botId").asString() != "") {
+                    JWTPrincipal(credential.payload)
+                } else {
+                    null
+                }
+            }
             challenge { _, _ ->
-                call.respond(HttpStatusCode.Unauthorized, "Token is not valid or has expired")
+                call.respond(HttpStatusCode.Unauthorized, ResponseText.loginFailed)
             }
         }
     }

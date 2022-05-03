@@ -12,7 +12,7 @@ import io.ktor.server.routing.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-fun Route.refresh(appEnvironment: AppEnvironment) {
+fun Route.refreshRoute(appEnvironment: AppEnvironment) {
     val serverConfig = appEnvironment.serverConfig
     val jwtAuthenticator = appEnvironment.jwtAuthenticator
     route("/jwt_refresh") {

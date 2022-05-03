@@ -5,6 +5,7 @@ import com.admin_bot.features.registration.data.RegisterParams
 import com.admin_bot.environment.config.ResponseText
 import com.admin_bot.plugins.mocks.database.MockDatabase
 import com.admin_bot.plugins.mocks.model.authentication.MockJwtAuthenticator
+import com.admin_bot.runner.AppTestRunner
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
@@ -15,7 +16,7 @@ import kotlinx.coroutines.withContext
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class RegistrationTest {
+class RegistrationTest: AppTestRunner() {
     @Test
     fun testRegistrationWithEmptyRepository() = testApplication {
         val mockDatabase = MockDatabase()

@@ -4,9 +4,9 @@ import com.admin_bot.environment.AppEnvironment
 import com.admin_bot.environment.config.JwtConfig
 import com.admin_bot.environment.config.ServerConfig
 import com.admin_bot.features.authentification.model.JwtAuthenticator
+import com.admin_bot.features.helpers.Validators
 import com.admin_bot.features.login.model.LoginRepository
 import com.admin_bot.features.registration.model.RegistrationRepository
-import com.admin_bot.features.helpers.Validators
 import com.admin_bot.plugins.mocks.database.MockDatabase
 import com.admin_bot.plugins.mocks.model.authentication.MockJwtAuthenticator
 import com.admin_bot.plugins.mocks.model.login.MockLoginRepository
@@ -43,4 +43,5 @@ class MockEnvironment(
         registrationRepository = MockRegistrationRepository(mockDatabase)
         loginRepository = MockLoginRepository(mockDatabase)
     }
+
 }

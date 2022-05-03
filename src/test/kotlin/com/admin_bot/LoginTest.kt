@@ -5,6 +5,7 @@ import com.admin_bot.features.bot.data.BotInfo
 import com.admin_bot.features.login.data.LoginParams
 import com.admin_bot.plugins.mocks.database.MockDatabase
 import com.admin_bot.plugins.mocks.model.authentication.MockJwtAuthenticator
+import com.admin_bot.runner.AppTestRunner
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
@@ -16,7 +17,7 @@ import kotlinx.coroutines.withContext
 import org.junit.Test
 import kotlin.test.assertEquals
 
-class LoginTest {
+class LoginTest: AppTestRunner() {
     @Test
     fun testLoginWithEmptyRepository() = testApplication {
         val mockDatabase = MockDatabase()

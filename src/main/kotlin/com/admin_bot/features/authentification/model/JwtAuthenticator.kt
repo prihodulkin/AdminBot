@@ -63,6 +63,9 @@ abstract class JwtAuthenticator {
         return Pair(false, null)
     }
 
+    /**
+     * Throws [ExpiredException] if refresh token is expired
+     */
     private fun checkIsRefreshTokenExpired(refreshTokenExpiresDateString: String) {
         val expiresDateTime = Instant.parse(refreshTokenExpiresDateString)
         if (expiresDateTime > Clock.System.now()) {
@@ -70,6 +73,9 @@ abstract class JwtAuthenticator {
         }
     }
 
+    /**
+     * Returns true if [refreshToken] was in storage and was deleted
+     */
     protected abstract suspend fun deleteRefreshTokenIfContains(refreshToken: String, botId: Int): Boolean
 
     protected abstract suspend fun saveRefreshToken(refreshToken: String, botId: Int)

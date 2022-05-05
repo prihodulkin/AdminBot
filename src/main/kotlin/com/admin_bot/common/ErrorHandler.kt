@@ -1,7 +1,7 @@
-package com.admin_bot.features.helpers
+package com.admin_bot.common
 
 import com.admin_bot.common.AppException
-import com.admin_bot.config.ResponseText
+import com.admin_bot.common.ResponseText
 
 import io.ktor.http.*
 import io.ktor.server.application.*

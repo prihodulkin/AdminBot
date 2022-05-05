@@ -6,9 +6,9 @@ import com.admin_bot.features.bot.data.BotInfo
 import com.admin_bot.features.registration.data.CompleteRegisterParams
 import com.admin_bot.features.registration.data.EmailConfirmationParams
 import com.admin_bot.features.registration.data.RegisterParams
-import com.admin_bot.features.registration.model.RegistrationRepository
+import com.admin_bot.features.registration.model.RegistrationManager
 
-class MockRegistrationRepository(private val mockDatabase: MockDatabase) : RegistrationRepository {
+class MockRegistrationManager(private val mockDatabase: MockDatabase) : RegistrationManager {
     override suspend fun register(registerParams: RegisterParams): Int? {
         val bots = mockDatabase!!.bots!!
         val botInfo = bots.firstOrNull { bot -> bot.token == registerParams.token }

@@ -4,13 +4,13 @@ import com.admin_bot.environment.AppEnvironment
 import com.admin_bot.config.JwtConfig
 import com.admin_bot.config.ServerConfig
 import com.admin_bot.features.authentification.model.JwtAuthenticator
-import com.admin_bot.features.helpers.Validators
+import com.admin_bot.common.Validators
 import com.admin_bot.features.login.model.LoginRepository
-import com.admin_bot.features.registration.model.RegistrationRepository
+import com.admin_bot.features.registration.model.RegistrationManager
 import com.admin_bot.plugins.mocks.database.MockDatabase
 import com.admin_bot.plugins.mocks.model.authentication.MockJwtAuthenticator
 import com.admin_bot.plugins.mocks.model.login.MockLoginRepository
-import com.admin_bot.plugins.mocks.model.registration.MockRegistrationRepository
+import com.admin_bot.plugins.mocks.model.registration.MockRegistrationManager
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
@@ -34,13 +34,13 @@ class MockEnvironment(
 
     override val serverConfig: ServerConfig
     override val passwordValidator = Validators.Companion::validatePassword
-    override val registrationRepository: RegistrationRepository
+    val registrationManager: RegistrationManager
     override val loginRepository: LoginRepository
     override val jwtAuthenticator: JwtAuthenticator
 
     init {
         serverConfig = mockServerConfig ?: defaultMockServerConfig
-        registrationRepository = MockRegistrationRepository(mockDatabase)
+        registrationManager = MockRegistrationManager(mockDatabase)
         loginRepository = MockLoginRepository(mockDatabase)
         jwtAuthenticator = MockJwtAuthenticator(useMockAuthTokens)
     }

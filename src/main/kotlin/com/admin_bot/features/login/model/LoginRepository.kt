@@ -1,6 +1,7 @@
 package com.admin_bot.features.login.model
 
-import com.admin_bot.config.ResponseText
+import com.admin_bot.common.ResponseText
+import com.admin_bot.common.WrongRequestArgumentsException
 import com.admin_bot.features.login.data.LoginParams
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -15,7 +16,7 @@ abstract class LoginRepository {
         val hasEmail = loginParams.email != null
         val hasAccessToken = loginParams.token != null
         if (hasEmail && hasAccessToken) {
-            throw IllegalArgumentException(ResponseText.useOnlyEmailOrAccessTokenForLogin)
+            throw  WrongRequestArgumentsException(ResponseText.useOnlyEmailOrAccessTokenForLogin)
         } else if (hasEmail) {
             val result = async { loginWithEmail(loginParams.email!!, loginParams.password) }
             return@coroutineScope result.await()
@@ -23,10 +24,11 @@ abstract class LoginRepository {
             val result = async { loginWithAccessToken(loginParams.token!!, loginParams.password) }
             return@coroutineScope result.await()
         } else {
-            throw IllegalArgumentException("You should send 'email' or 'accessToken' parameters")
+            throw WrongRequestArgumentsException(ResponseText.useEmailOrAccessTokenForLogin)
         }
     }
 
     protected abstract suspend fun loginWithEmail(email: String, password: String): Int?
     protected abstract suspend fun loginWithAccessToken(accessToken: String, password: String): Int?
 }
+

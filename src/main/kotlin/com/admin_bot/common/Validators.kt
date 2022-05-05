@@ -1,4 +1,4 @@
-package com.admin_bot.features.helpers
+package com.admin_bot.common
 
 class Validators{
     companion object{

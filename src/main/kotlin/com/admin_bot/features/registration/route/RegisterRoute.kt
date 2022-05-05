@@ -1,9 +1,9 @@
 package com.admin_bot.features.registration.route
 
-import com.admin_bot.config.ResponseText
+import com.admin_bot.common.ResponseText
 import com.admin_bot.environment.AppEnvironment
 import com.admin_bot.features.registration.data.RegisterParams
-import com.admin_bot.features.helpers.handleCommonErrors
+import com.admin_bot.common.handleCommonErrors
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -14,7 +14,7 @@ import kotlinx.coroutines.withContext
 
 
 fun Route.registerRoute(appEnvironment: AppEnvironment) {
-    val registrationRepository = appEnvironment.registrationRepository
+    val registrationRepository = appEnvironment.registrationManager
     val jwtAuthenticator = appEnvironment.jwtAuthenticator
     val validator = appEnvironment.passwordValidator
     route("/register") {

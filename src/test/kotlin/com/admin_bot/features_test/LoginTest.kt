@@ -1,6 +1,6 @@
 package com.admin_bot.features_test
 
-import com.admin_bot.config.ResponseText
+import com.admin_bot.common.ResponseText
 import com.admin_bot.createJsonClient
 import com.admin_bot.features.bot.data.BotInfo
 import com.admin_bot.features.login.data.LoginParams

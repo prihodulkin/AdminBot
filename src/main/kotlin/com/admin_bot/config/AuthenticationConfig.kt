@@ -1,5 +1,6 @@
 package com.admin_bot.config
 
+import com.admin_bot.common.ResponseText
 import com.admin_bot.environment.AppEnvironment
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm

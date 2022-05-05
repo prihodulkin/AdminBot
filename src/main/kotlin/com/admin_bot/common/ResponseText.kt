@@ -1,4 +1,4 @@
-package com.admin_bot.config
+package com.admin_bot.common
 
 class ResponseText {
     companion object{

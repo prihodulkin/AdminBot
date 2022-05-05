@@ -2,7 +2,7 @@ package com.admin_bot.features.authentification.model
 
 import com.admin_bot.common.AppException
 import com.admin_bot.common.ExpiredException
-import com.admin_bot.config.ResponseText
+import com.admin_bot.common.ResponseText
 import com.admin_bot.config.ServerConfig
 import com.admin_bot.features.authentification.data.AuthTokens
 import com.auth0.jwt.JWT
@@ -14,7 +14,7 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import java.sql.Date
 
-abstract class JwtAuthenticator {
+abstract class JwtAuthenticator(private val refreshTokenStorage: RefreshTokenStorage) {
     companion object {
         const val botIdClaim = "botId"
         const val refreshTokenLength = 100
@@ -23,8 +23,8 @@ abstract class JwtAuthenticator {
     open suspend fun generateTokens(serverConfig: ServerConfig, botId: Int): AuthTokens {
         val accessToken = generateAccessToken(serverConfig, botId)
         val refreshToken = generateRefreshToken(serverConfig, botId)
-        withContext(Dispatchers.Default){
-            saveRefreshToken(refreshToken, botId)
+        withContext(Dispatchers.Default) {
+            refreshTokenStorage.saveRefreshToken(refreshToken, botId)
         }
         return AuthTokens(accessToken, refreshToken)
     }
@@ -60,7 +60,7 @@ abstract class JwtAuthenticator {
         try {
             val parsedToken = refreshToken.split(' ')
             val botId = parsedToken.first().toInt()
-            if (deleteRefreshTokenIfContains(refreshToken, botId)) {
+            if (refreshTokenStorage.deleteRefreshTokenIfContains(refreshToken, botId)) {
                 checkIsRefreshTokenExpired(parsedToken[1])
                 return Pair(true, botId)
             }
@@ -81,27 +81,8 @@ abstract class JwtAuthenticator {
             throw ExpiredException(HttpStatusCode.Unauthorized, ResponseText.refreshTokenIsExpired)
         }
     }
-
-    /**
-     * Returns true if [refreshToken] was in storage and was deleted
-     */
-    protected abstract suspend fun deleteRefreshTokenIfContains(refreshToken: String, botId: Int): Boolean
-
-    protected abstract suspend fun saveRefreshToken(refreshToken: String, botId: Int)
-
 }
 
-
-class RefreshTokenIncorrectFormatException : AppException {
-    companion object {
-        val statusCode = HttpStatusCode.Unauthorized
-    }
-
-    override val statusCode = RefreshTokenIncorrectFormatException.statusCode
-
-    constructor() : super(RefreshTokenIncorrectFormatException.statusCode)
-    constructor(message: String) : super(RefreshTokenIncorrectFormatException.statusCode, message)
-    constructor(message: String, cause: Throwable) : super(RefreshTokenIncorrectFormatException.statusCode, message, cause)
-    constructor(cause: Throwable) : super(RefreshTokenIncorrectFormatException.statusCode, cause)
-}
+class RefreshTokenIncorrectFormatException(message: String) :
+    AppException(HttpStatusCode.Unauthorized, message)
 

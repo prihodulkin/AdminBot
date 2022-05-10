@@ -26,12 +26,10 @@ class LoginTest: AppTestRunner() {
             runWithMockEnvironment(mockDatabase)
         }
         val client = createJsonClient()
-        withContext(Dispatchers.Default) {
-            testLoginFailed(
+        testLoginFailed(
                 LoginParams(token = "token", password = "Qwerty123"),
                 client
             )
-        }
     }
 
     @Test
@@ -80,7 +78,6 @@ class LoginTest: AppTestRunner() {
             runWithMockEnvironment(mockDatabase)
         }
         val client = createJsonClient()
-
         withContext(Dispatchers.Default) {
             testLoginFailed(
                 LoginParams(email = "test@test.ru", password = "Qwerty124"),
@@ -105,19 +102,14 @@ class LoginTest: AppTestRunner() {
             runWithMockEnvironment(mockDatabase)
         }
         val client = createJsonClient()
-
-        withContext(Dispatchers.Default) {
-            testLoginFailed(
-                LoginParams(email = "test@tesy.ru", password = "Qwerty124"),
-                client
-            )
-        }
-        withContext(Dispatchers.Default) {
-            testLoginFailed(
-                LoginParams(token = "tokem", password = "Qwerty124"),
-                client
-            )
-        }
+        testLoginFailed(
+            LoginParams(email = "test@tesy.ru", password = "Qwerty124"),
+            client
+        )
+        testLoginFailed(
+            LoginParams(token = "tokem", password = "Qwerty124"),
+            client
+        )
     }
 
     @Test
@@ -138,18 +130,16 @@ class LoginTest: AppTestRunner() {
             assertEquals(HttpStatusCode.BadRequest, response.status)
             assertEquals(expectedResponseText, response.bodyAsText())
         }
-        withContext(Dispatchers.Default) {
-            testLoginFailedWithBadRequest(
-                LoginParams(password = "Qwerty123"),
-                expectedResponseText = ResponseText.useEmailOrAccessTokenForLogin
-            )
-        }
-        withContext(Dispatchers.Default) {
-            testLoginFailedWithBadRequest(
-                LoginParams(password = "Qwerty123", email = "test@test.ru", token = "token"),
-                expectedResponseText = ResponseText.useOnlyEmailOrAccessTokenForLogin
-            )
-        }
+        testLoginFailedWithBadRequest(
+            LoginParams(password = "Qwerty123"),
+            expectedResponseText = ResponseText.useEmailOrAccessTokenForLogin
+        )
+
+        testLoginFailedWithBadRequest(
+            LoginParams(password = "Qwerty123", email = "test@test.ru", token = "token"),
+            expectedResponseText = ResponseText.useOnlyEmailOrAccessTokenForLogin
+        )
+
     }
 
     @Test
@@ -163,7 +153,7 @@ class LoginTest: AppTestRunner() {
             contentType(ContentType.Application.Json)
             setBody(LoginParams(token = "token", password = "Qwerty123"))
         }
-        assertEquals(HttpStatusCode.InternalServerError, response.status)
+        assertEquals(HttpStatusCode.LongernalServerError, response.status)
         assertEquals(ResponseText.internalError, response.bodyAsText())
     }
 

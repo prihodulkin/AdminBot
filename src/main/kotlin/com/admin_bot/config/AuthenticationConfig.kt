@@ -37,3 +37,7 @@ fun Application.configureJwtAuthentication(appEnvironment: AppEnvironment){
         }
     }
 }
+
+fun ApplicationCall.botId(): Long{
+   return principal<JWTPrincipal>()!!.payload.getClaim("botId").asLong()
+}

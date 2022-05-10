@@ -20,7 +20,7 @@ abstract class JwtAuthenticator(private val refreshTokenStorage: RefreshTokenSto
         const val refreshTokenLength = 100
     }
 
-    open suspend fun generateTokens(serverConfig: ServerConfig, botId: Int): AuthTokens {
+    open suspend fun generateTokens(serverConfig: ServerConfig, botId: Long): AuthTokens {
         val accessToken = generateAccessToken(serverConfig, botId)
         val refreshToken = generateRefreshToken(serverConfig, botId)
         withContext(Dispatchers.Default) {
@@ -29,7 +29,7 @@ abstract class JwtAuthenticator(private val refreshTokenStorage: RefreshTokenSto
         return AuthTokens(accessToken, refreshToken)
     }
 
-    private fun generateAccessToken(serverConfig: ServerConfig, botId: Int): String {
+    private fun generateAccessToken(serverConfig: ServerConfig, botId: Long): String {
         val jwtConfig = serverConfig.jwtConfig
         return JWT.create()
             .withAudience(jwtConfig.audience)
@@ -44,7 +44,7 @@ abstract class JwtAuthenticator(private val refreshTokenStorage: RefreshTokenSto
             .sign(Algorithm.HMAC256(jwtConfig.hs256Secret))
     }
 
-    private fun generateRefreshToken(serverConfig: ServerConfig, botId: Int): String {
+    private fun generateRefreshToken(serverConfig: ServerConfig, botId: Long): String {
         val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
         val expiresAt = Clock.System.now().plus(serverConfig.refreshTokenLifetime)
         return "$botId $expiresAt " + (1..refreshTokenLength)
@@ -56,10 +56,10 @@ abstract class JwtAuthenticator(private val refreshTokenStorage: RefreshTokenSto
      * Returns Pair(true, botId) if refresh token is valid or Pair(false, null) in the other case.
      * Throws [ExpiredException] if refresh token is expired
      */
-    suspend fun validateRefreshTokenAndRemoveOnSuccess(refreshToken: String): Pair<Boolean, Int?> {
+    suspend fun validateRefreshTokenAndRemoveOnSuccess(refreshToken: String): Pair<Boolean, Long?> {
         try {
             val parsedToken = refreshToken.split(' ')
-            val botId = parsedToken.first().toInt()
+            val botId = parsedToken.first().toLong()
             if (refreshTokenStorage.deleteRefreshTokenIfContains(refreshToken, botId)) {
                 checkIsRefreshTokenExpired(parsedToken[1])
                 return Pair(true, botId)

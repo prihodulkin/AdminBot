@@ -6,7 +6,7 @@ import com.admin_bot.features.authentification.data.AuthTokens
 import com.admin_bot.features.authentification.data.JwtRefreshParams
 import com.admin_bot.features.bot.data.BotInfo
 import com.admin_bot.features.login.data.LoginParams
-import com.admin_bot.plugins.mocks.MockEnvironment
+import com.admin_bot.environment.TestEnvironment
 import com.admin_bot.plugins.mocks.database.MockDatabase
 import com.admin_bot.runner.AppTestRunner
 import io.ktor.client.*
@@ -15,9 +15,7 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.server.testing.*
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration
@@ -26,9 +24,9 @@ import kotlin.time.toDuration
 
 class AuthenticationTest: AppTestRunner() {
     private val accessTokenExpiresDuration: Duration =
-        MockEnvironment.defaultMockServerConfig.accessTokenLifetime.plus(1.toDuration(DurationUnit.SECONDS))
+        TestEnvironment.defaultMockServerConfig.accessTokenLifetime.plus(1.toDuration(DurationUnit.SECONDS))
     private val refreshTokenExpiresDuration: Duration =
-        MockEnvironment.defaultMockServerConfig.refreshTokenLifetime.plus(1.toDuration(DurationUnit.SECONDS))
+        TestEnvironment.defaultMockServerConfig.refreshTokenLifetime.plus(1.toDuration(DurationUnit.SECONDS))
     private val mockDatabase = MockDatabase(
         bots = mutableListOf(BotInfo(id = 1, token = "token")),
         botPasswords = mutableMapOf(1 to "Qwerty123")
@@ -46,9 +44,7 @@ class AuthenticationTest: AppTestRunner() {
         }
         val authTokens = response.body<AuthTokens>()
         val accessToken = authTokens.accessToken
-        withContext(Dispatchers.Default) {
-            testAuthorizationSucceed(client, accessToken)
-        }
+        testAuthorizationSucceed(client, accessToken)
         delay(accessTokenExpiresDuration)
         testAuthorizationFailed(client, accessToken)
     }

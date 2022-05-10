@@ -2,7 +2,7 @@ package com.admin_bot.runner
 
 import com.admin_bot.environment.AppEnvironment
 import com.admin_bot.config.ServerConfig
-import com.admin_bot.plugins.mocks.MockEnvironment
+import com.admin_bot.environment.TestEnvironment
 import com.admin_bot.plugins.mocks.database.MockDatabase
 import com.admin_bot.plugins.mocks.route.authCheckRoute
 import io.ktor.server.application.*
@@ -14,13 +14,13 @@ open class AppTestRunner : AppRunner() {
         useMockAuthToken: Boolean = true,
         mockServerConfig: ServerConfig? = null
     ) {
-        val mockEnvironment =
-            MockEnvironment(
+        val testEnvironment =
+            TestEnvironment(
                 mockDatabase,
                 useMockAuthTokens = useMockAuthToken,
                 mockServerConfig = mockServerConfig
             )
-        run(mockEnvironment)
+        run(testEnvironment)
     }
 
     override fun Route.configureRouting(appEnvironment: AppEnvironment) {

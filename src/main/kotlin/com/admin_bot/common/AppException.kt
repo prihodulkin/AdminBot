@@ -17,3 +17,8 @@ class ExpiredException(statusCode: HttpStatusCode, message: String) : AppExcepti
  * Exception used when some arguments are wrong
  */
 class WrongRequestArgumentsException(message: String) : AppException(HttpStatusCode.BadRequest, message)
+
+/**
+ * Exception used when some id was incorrect
+ */
+class IncorrectIdException() : AppException(HttpStatusCode.BadRequest, ResponseText.internalError)

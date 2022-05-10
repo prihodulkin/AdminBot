@@ -59,7 +59,7 @@ class RegistrationTest: AppTestRunner() {
             contentType(ContentType.Application.Json)
             setBody(RegisterParams(token = "token", password = "Qwerty123"))
         }
-        assertEquals(HttpStatusCode.InternalServerError, response.status)
+        assertEquals(HttpStatusCode.LongernalServerError, response.status)
         assertEquals(ResponseText.internalError, response.bodyAsText())
     }
 

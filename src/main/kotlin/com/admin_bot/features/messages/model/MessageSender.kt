@@ -10,12 +10,12 @@ abstract class MessageSender(private val botInfo: BotInfo) {
         }
     }
 
-    abstract fun sendMessage(messageText: String, chatId: Int)
+    abstract fun sendMessage(messageText: String, chatId: Long)
     fun sendMessage(messageText: String, sendAt: Instant) {
         for (chatId in botInfo.chatIds) {
             sendMessage(messageText, chatId, sendAt)
         }
     }
 
-    abstract fun sendMessage(messageText: String, chatId: Int, sendAt: Instant)
+    abstract fun sendMessage(messageText: String, chatId: Long, sendAt: Instant)
 }

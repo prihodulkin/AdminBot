@@ -7,10 +7,10 @@ import kotlinx.datetime.Instant
 
 @Serializable
 data class Message(
-    val id: Int,
+    val id: Long,
     val text: String,
-    val userId: Int,
-    val chatId: Int,
+    val userId: Long,
+    val chatId: Long,
     val createdAt: Instant,
     val botClassification: MessageCategory,
     val adminClassification: MessageCategory,

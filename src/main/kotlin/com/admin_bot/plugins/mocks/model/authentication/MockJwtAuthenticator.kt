@@ -12,7 +12,7 @@ class MockJwtAuthenticator(private val useMockAuthTokens: Boolean = true) :
         val authTokens = AuthTokens("accessToken", "refreshToken")
     }
 
-    override suspend fun generateTokens(serverConfig: ServerConfig, botId: Int): AuthTokens {
+    override suspend fun generateTokens(serverConfig: ServerConfig, botId: Long): AuthTokens {
         return if (useMockAuthTokens) authTokens else super.generateTokens(serverConfig, botId)
     }
 }

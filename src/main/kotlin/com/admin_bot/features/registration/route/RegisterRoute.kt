@@ -1,9 +1,9 @@
 package com.admin_bot.features.registration.route
 
 import com.admin_bot.common.ResponseText
+import com.admin_bot.common.handleCommonErrors
 import com.admin_bot.environment.AppEnvironment
 import com.admin_bot.features.registration.data.RegisterParams
-import com.admin_bot.common.handleCommonErrors
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -32,10 +32,7 @@ fun Route.registerRoute(appEnvironment: AppEnvironment) {
                     call.respond(HttpStatusCode.Conflict, ResponseText.accessTokenIsAlreadyUsed)
                 } else {
                     val serverConfig = appEnvironment.serverConfig
-                    val authTokens =
-                        withContext(Dispatchers.Default) {
-                            jwtAuthenticator.generateTokens(serverConfig, botId)
-                        }
+                    val authTokens = jwtAuthenticator.generateTokens(serverConfig, botId)
                     call.respond(HttpStatusCode.Created, authTokens)
                 }
             }

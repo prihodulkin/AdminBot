@@ -1,16 +1,14 @@
 package com.admin_bot.plugins.mocks.model.registration
 
+import com.admin_bot.common.IncorrectIdException
 import com.admin_bot.plugins.mocks.database.MockDatabase
-import com.admin_bot.plugins.mocks.MockGlobals
 import com.admin_bot.features.bot.data.BotInfo
-import com.admin_bot.features.registration.data.CompleteRegisterParams
-import com.admin_bot.features.registration.data.EmailConfirmationParams
 import com.admin_bot.features.registration.data.RegisterParams
 import com.admin_bot.features.registration.model.RegistrationManager
 
 class MockRegistrationManager(private val mockDatabase: MockDatabase) : RegistrationManager {
-    override suspend fun register(registerParams: RegisterParams): Int? {
-        val bots = mockDatabase!!.bots!!
+    override suspend fun register(registerParams: RegisterParams): Long? {
+        val bots = mockDatabase.bots!!
         val botInfo = bots.firstOrNull { bot -> bot.token == registerParams.token }
         if (botInfo != null) {
             return null
@@ -20,17 +18,16 @@ class MockRegistrationManager(private val mockDatabase: MockDatabase) : Registra
         return id
     }
 
-    override suspend fun sendOtp(completeRegisterParams: CompleteRegisterParams, botId: Int) {
-        val otp = mockDatabase.oneTimePasswords!!
-        otp[botId] = MockGlobals.otp.toString()
+    override suspend fun completeRegistration(botId: Long, email: String) {
+        val bots = mockDatabase.bots!!
+        val index = bots.indexOfFirst { bot -> bot.id==botId }
+        if(index==-1){
+            throw IncorrectIdException()
+        }
+        bots[index]=bots[index].copy(adminEmail=email)
     }
 
-    override suspend fun verifyOtp(emailConfirmationParams: EmailConfirmationParams, botId: Int): Boolean {
-        val otp = mockDatabase.oneTimePasswords!!
-        return otp[botId] == emailConfirmationParams.otp
-    }
-
-    override suspend fun unregister(botId: Int): Boolean {
+    override suspend fun unregister(botId: Long): Boolean {
         val bots = mockDatabase!!.bots!!
         return bots.removeIf { bot -> bot.id == botId }
     }

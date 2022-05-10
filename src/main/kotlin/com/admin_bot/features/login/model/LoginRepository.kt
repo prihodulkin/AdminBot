@@ -12,7 +12,7 @@ abstract class LoginRepository {
      * Throws [IllegalArgumentException] in case of incorrect [loginParams]
      * Returns botId if login was success and null in the other case
      */
-    suspend fun login(loginParams: LoginParams): Int? = coroutineScope {
+    suspend fun login(loginParams: LoginParams): Long? = coroutineScope {
         val hasEmail = loginParams.email != null
         val hasAccessToken = loginParams.token != null
         if (hasEmail && hasAccessToken) {
@@ -21,14 +21,14 @@ abstract class LoginRepository {
             val result = async { loginWithEmail(loginParams.email!!, loginParams.password) }
             return@coroutineScope result.await()
         } else if (hasAccessToken) {
-            val result = async { loginWithAccessToken(loginParams.token!!, loginParams.password) }
+            val result = async { loginWithBotToken(loginParams.token!!, loginParams.password) }
             return@coroutineScope result.await()
         } else {
             throw WrongRequestArgumentsException(ResponseText.useEmailOrAccessTokenForLogin)
         }
     }
 
-    protected abstract suspend fun loginWithEmail(email: String, password: String): Int?
-    protected abstract suspend fun loginWithAccessToken(accessToken: String, password: String): Int?
+    protected abstract suspend fun loginWithEmail(email: String, password: String): Long?
+    protected abstract suspend fun loginWithBotToken(token: String, password: String): Long?
 }
 

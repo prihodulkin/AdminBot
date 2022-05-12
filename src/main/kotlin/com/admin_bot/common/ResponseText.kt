@@ -15,6 +15,8 @@ class ResponseText {
         const val incorrectRefreshToken = "Refresh token is incorrect"
         const val refreshTokenIsExpired = "Refresh token is expired"
         const val incorrectEmailFormat = "Incorrect email format"
+        const val emailIsAlreadyUsed = "Email is already used"
+        const val otpWasExpired = "One-time password was expired"
         fun otpWasSent(email: String): String {
             return "One-time password was sent to $email"
         }

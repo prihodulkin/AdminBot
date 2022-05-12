@@ -13,8 +13,6 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.server.testing.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -23,7 +21,7 @@ class LoginTest: AppTestRunner() {
     fun testLoginWithEmptyRepository() = testApplication {
         val mockDatabase = MockDatabase()
         application {
-            runWithMockEnvironment(mockDatabase)
+            runWithTestEnvironment(mockDatabase)
         }
         val client = createJsonClient()
         testLoginFailed(
@@ -36,10 +34,10 @@ class LoginTest: AppTestRunner() {
     fun testLoginWithCorrectToken() = testApplication {
         val mockDatabase = MockDatabase(
             bots = mutableListOf(BotInfo(id = 1, token = "token")),
-            botPasswords = mutableMapOf(1 to "Qwerty123")
+            botPasswords = mutableMapOf(1L to "Qwerty123")
         )
         application {
-            runWithMockEnvironment(mockDatabase)
+            runWithTestEnvironment(mockDatabase)
         }
         val client = createJsonClient()
         val response = client.post("/login") {
@@ -54,10 +52,10 @@ class LoginTest: AppTestRunner() {
     fun testLoginWithCorrectEmail() = testApplication {
         val mockDatabase = MockDatabase(
             bots = mutableListOf(BotInfo(id = 1, adminEmail = "test@test.ru", token = "token")),
-            botPasswords = mutableMapOf(1 to "Qwerty123")
+            botPasswords = mutableMapOf(1L to "Qwerty123")
         )
         application {
-            runWithMockEnvironment(mockDatabase)
+            runWithTestEnvironment(mockDatabase)
         }
         val client = createJsonClient()
         val response = client.post("/login") {
@@ -72,34 +70,32 @@ class LoginTest: AppTestRunner() {
     fun testLoginFailedWithIncorrectPassword() = testApplication {
         val mockDatabase = MockDatabase(
             bots = mutableListOf(BotInfo(id = 1, adminEmail = "test@test.ru", token = "token")),
-            botPasswords = mutableMapOf(1 to "Qwerty123")
+            botPasswords = mutableMapOf(1L to "Qwerty123")
         )
         application {
-            runWithMockEnvironment(mockDatabase)
+            runWithTestEnvironment(mockDatabase)
         }
         val client = createJsonClient()
-        withContext(Dispatchers.Default) {
-            testLoginFailed(
+
+        testLoginFailed(
                 LoginParams(email = "test@test.ru", password = "Qwerty124"),
                 client
             )
-        }
-        withContext(Dispatchers.Default) {
-            testLoginFailed(
+
+        testLoginFailed(
                 LoginParams(token = "token", password = "Qwerty124"),
                 client
             )
-        }
     }
 
     @Test
     fun testLoginFailedWithNonExistentEmailOrToken() = testApplication {
         val mockDatabase = MockDatabase(
             bots = mutableListOf(BotInfo(id = 1, adminEmail = "test@test.ru", token = "token")),
-            botPasswords = mutableMapOf(1 to "Qwerty123")
+            botPasswords = mutableMapOf(1L to "Qwerty123")
         )
         application {
-            runWithMockEnvironment(mockDatabase)
+            runWithTestEnvironment(mockDatabase)
         }
         val client = createJsonClient()
         testLoginFailed(
@@ -116,10 +112,10 @@ class LoginTest: AppTestRunner() {
     fun testLoginFailedWithIncorrectParams() = testApplication {
         val mockDatabase = MockDatabase(
             bots = mutableListOf(BotInfo(id = 1, token = "token")),
-            botPasswords = mutableMapOf(1 to "Qwerty123")
+            botPasswords = mutableMapOf(1L to "Qwerty123")
         )
         application {
-            runWithMockEnvironment(mockDatabase)
+            runWithTestEnvironment(mockDatabase)
         }
         val client = createJsonClient()
         suspend fun testLoginFailedWithBadRequest(loginParams: LoginParams, expectedResponseText: String) {
@@ -146,14 +142,14 @@ class LoginTest: AppTestRunner() {
     fun testLoginFailedWithDatabaseError() = testApplication {
         val mockDatabase = MockDatabase.withNullValues()
         application {
-            runWithMockEnvironment(mockDatabase)
+            runWithTestEnvironment(mockDatabase)
         }
         val client = createJsonClient()
         val response = client.post("/login") {
             contentType(ContentType.Application.Json)
             setBody(LoginParams(token = "token", password = "Qwerty123"))
         }
-        assertEquals(HttpStatusCode.LongernalServerError, response.status)
+        assertEquals(HttpStatusCode.InternalServerError, response.status)
         assertEquals(ResponseText.internalError, response.bodyAsText())
     }
 

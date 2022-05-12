@@ -9,15 +9,15 @@ import io.ktor.server.application.*
 import io.ktor.server.routing.*
 
 open class AppTestRunner : AppRunner() {
-    fun Application.runWithMockEnvironment(
+    fun Application.runWithTestEnvironment(
         mockDatabase: MockDatabase,
-        useMockAuthToken: Boolean = true,
+        useMockAuthTokens: Boolean = true,
         mockServerConfig: ServerConfig? = null
     ) {
         val testEnvironment =
             TestEnvironment(
                 mockDatabase,
-                useMockAuthTokens = useMockAuthToken,
+                useMockAuthTokens = useMockAuthTokens,
                 mockServerConfig = mockServerConfig
             )
         run(testEnvironment)

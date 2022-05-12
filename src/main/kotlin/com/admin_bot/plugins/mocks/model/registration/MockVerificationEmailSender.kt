@@ -5,5 +5,8 @@ import com.admin_bot.features.registration.model.VerificationEmailSender;
 import kotlinx.datetime.Instant
 
 class MockVerificationEmailSender(serverConfig: ServerConfig) : VerificationEmailSender(serverConfig) {
-    override fun sendMailWithOtp(emailAddress: String, expiresAt: Instant, code: String) {}
+    var lastEmail: String? = null
+    override fun sendMailWithOtp(emailAddress: String, expiresAt: Instant, code: String) {
+        lastEmail=emailAddress
+    }
 }

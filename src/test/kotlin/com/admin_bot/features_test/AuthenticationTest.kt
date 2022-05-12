@@ -29,13 +29,13 @@ class AuthenticationTest: AppTestRunner() {
         TestEnvironment.defaultMockServerConfig.refreshTokenLifetime.plus(1.toDuration(DurationUnit.SECONDS))
     private val mockDatabase = MockDatabase(
         bots = mutableListOf(BotInfo(id = 1, token = "token")),
-        botPasswords = mutableMapOf(1 to "Qwerty123")
+        botPasswords = mutableMapOf(1L to "Qwerty123")
     )
 
     @Test
     fun testJwtAccessToken() = testApplication {
         application {
-            runWithMockEnvironment(mockDatabase, useMockAuthToken = false)
+            runWithTestEnvironment(mockDatabase, useMockAuthTokens = false)
         }
         val client = createJsonClient()
         var response = client.post("/login") {
@@ -52,7 +52,7 @@ class AuthenticationTest: AppTestRunner() {
     @Test
     fun testRefreshToken() = testApplication {
         application {
-            runWithMockEnvironment(mockDatabase, useMockAuthToken = false)
+            runWithTestEnvironment(mockDatabase, useMockAuthTokens = false)
         }
         val client = createJsonClient()
         var response = client.post("/login") {
@@ -76,7 +76,7 @@ class AuthenticationTest: AppTestRunner() {
     @Test
     fun testIncorrectRefreshToken() = testApplication {
         application {
-            runWithMockEnvironment(mockDatabase, useMockAuthToken = false)
+            runWithTestEnvironment(mockDatabase, useMockAuthTokens = false)
         }
         val client = createJsonClient()
         var response = client.post("/login") {
@@ -93,7 +93,7 @@ class AuthenticationTest: AppTestRunner() {
     @Test
     fun testExpiredRefreshToken() = testApplication {
         application {
-            runWithMockEnvironment(mockDatabase, useMockAuthToken = false)
+            runWithTestEnvironment(mockDatabase, useMockAuthTokens = false)
         }
         val client = createJsonClient()
         var response = client.post("/login") {
@@ -111,7 +111,7 @@ class AuthenticationTest: AppTestRunner() {
     @Test
     fun testRefreshTokenIsDisposable() = testApplication {
         application {
-            runWithMockEnvironment(mockDatabase, useMockAuthToken = false)
+            runWithTestEnvironment(mockDatabase, useMockAuthTokens = false)
         }
         val client = createJsonClient()
         var response = client.post("/login") {

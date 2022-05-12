@@ -14,6 +14,7 @@ import com.admin_bot.plugins.mocks.model.authentication.MockJwtAuthenticator
 import com.admin_bot.plugins.mocks.model.login.MockLoginRepository
 import com.admin_bot.plugins.mocks.model.registration.MockOtpStorage
 import com.admin_bot.plugins.mocks.model.registration.MockRegistrationManager
+import com.admin_bot.plugins.mocks.model.registration.MockVerificationEmailSender
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
@@ -52,7 +53,7 @@ class TestEnvironment(
         registrationManager = MockRegistrationManager(mockDatabase)
         loginRepository = MockLoginRepository(mockDatabase)
         jwtAuthenticator = MockJwtAuthenticator(useMockAuthTokens)
-        verificationEmailSender = VerificationEmailSender(serverConfig)
+        verificationEmailSender = MockVerificationEmailSender(serverConfig)
         otpStorage = MockOtpStorage(mockDatabase)
         emailVerifier = EmailVerifier(verificationEmailSender, otpStorage, serverConfig)
     }

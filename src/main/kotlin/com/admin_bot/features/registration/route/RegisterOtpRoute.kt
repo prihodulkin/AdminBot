@@ -1,16 +1,11 @@
 package com.admin_bot.features.registration.route
 
-
-
 import com.admin_bot.common.ResponseText
-import com.admin_bot.common.Validators
-import com.admin_bot.common.WrongRequestArgumentsException
+import com.admin_bot.common.BadRequestException
 import com.admin_bot.common.handleCommonErrors
 import com.admin_bot.config.botId
 import com.admin_bot.environment.AppEnvironment
-import com.admin_bot.features.registration.data.CompleteRegistrationParams
 import com.admin_bot.features.registration.data.EmailConfirmationParams
-import com.admin_bot.features.registration.model.EmailVerifier
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -27,10 +22,12 @@ fun Route.registerOtpRoute(appEnvironment: AppEnvironment) {
                 handleCommonErrors {
                     val otp = call.receive<EmailConfirmationParams>().otp
                     val botId = call.botId()
-                    if(emailVerifier.verifyOtp(botId, otp)){
+                    val email = emailVerifier.verifyOtp(botId, otp)
+                    if(email!=null){
                         call.respond(HttpStatusCode.OK, ResponseText.emailWasConfirmed)
+                        registrationManager.completeRegistration(botId, email)
                     } else{
-                        throw WrongRequestArgumentsException(ResponseText.incorrectOtp)
+                        throw BadRequestException(ResponseText.incorrectOtp)
                     }
                 }
             }

@@ -22,7 +22,7 @@ class RegistrationTest: AppTestRunner() {
     fun testRegistrationWithEmptyRepository() = testApplication {
         val mockDatabase = MockDatabase()
         application {
-            runWithMockEnvironment(mockDatabase)
+            runWithTestEnvironment(mockDatabase)
         }
         val client = createJsonClient()
         val response = client.post("/register") {
@@ -37,7 +37,7 @@ class RegistrationTest: AppTestRunner() {
     fun testRegistrationWithIncorrectRequestBody() = testApplication {
         val mockDatabase = MockDatabase()
         application {
-            runWithMockEnvironment(mockDatabase)
+            runWithTestEnvironment(mockDatabase)
         }
         val client = createJsonClient()
         val response = client.post("/register") {
@@ -52,14 +52,14 @@ class RegistrationTest: AppTestRunner() {
     fun testRegistrationWithDatabaseAccessError() = testApplication {
         val mockDatabase = MockDatabase.withNullValues()
         application {
-            runWithMockEnvironment(mockDatabase)
+            runWithTestEnvironment(mockDatabase)
         }
         val client = createJsonClient()
         val response = client.post("/register") {
             contentType(ContentType.Application.Json)
             setBody(RegisterParams(token = "token", password = "Qwerty123"))
         }
-        assertEquals(HttpStatusCode.LongernalServerError, response.status)
+        assertEquals(HttpStatusCode.InternalServerError, response.status)
         assertEquals(ResponseText.internalError, response.bodyAsText())
     }
 
@@ -67,7 +67,7 @@ class RegistrationTest: AppTestRunner() {
     fun testWithIncorrectPassword() = testApplication {
         val mockDatabase = MockDatabase()
         application {
-            runWithMockEnvironment(mockDatabase)
+            runWithTestEnvironment(mockDatabase)
         }
         val client = createJsonClient()
         suspend fun testIncorrectPassword(password: String) {
@@ -88,7 +88,7 @@ class RegistrationTest: AppTestRunner() {
     fun testRegistrationWithAlreadyUsedToken() = testApplication {
         val mockDatabase = MockDatabase(bots = mutableListOf(BotInfo(1,"token")))
         application {
-            runWithMockEnvironment(mockDatabase)
+            runWithTestEnvironment(mockDatabase)
         }
         val client = createJsonClient()
         val response = client.post("/register") {

@@ -1,10 +1,10 @@
 package com.admin_bot.plugins.mocks.model.registration
 
 import com.admin_bot.common.IncorrectIdException
-import com.admin_bot.plugins.mocks.database.MockDatabase
 import com.admin_bot.features.bot.data.BotInfo
 import com.admin_bot.features.registration.data.RegisterParams
 import com.admin_bot.features.registration.model.RegistrationManager
+import com.admin_bot.plugins.mocks.database.MockDatabase
 
 class MockRegistrationManager(private val mockDatabase: MockDatabase) : RegistrationManager {
     override suspend fun register(registerParams: RegisterParams): Long? {
@@ -13,18 +13,24 @@ class MockRegistrationManager(private val mockDatabase: MockDatabase) : Registra
         if (botInfo != null) {
             return null
         }
-        val id = bots.size
+        val id = bots.size.toLong()
         bots.add(BotInfo(id = id, token = registerParams.token))
         return id
     }
 
+    override suspend fun isEmailNotBusy(email: String): Boolean {
+        val bots = mockDatabase.bots!!
+        val botInfo = bots.firstOrNull { bot -> bot.adminEmail == email }
+        return botInfo == null
+    }
+
     override suspend fun completeRegistration(botId: Long, email: String) {
         val bots = mockDatabase.bots!!
-        val index = bots.indexOfFirst { bot -> bot.id==botId }
-        if(index==-1){
+        val index = bots.indexOfFirst { bot -> bot.id == botId }
+        if (index == -1) {
             throw IncorrectIdException()
         }
-        bots[index]=bots[index].copy(adminEmail=email)
+        bots[index] = bots[index].copy(adminEmail = email)
     }
 
     override suspend fun unregister(botId: Long): Boolean {

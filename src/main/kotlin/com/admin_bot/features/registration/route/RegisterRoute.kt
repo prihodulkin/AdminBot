@@ -1,6 +1,7 @@
 package com.admin_bot.features.registration.route
 
 import com.admin_bot.common.ResponseText
+import com.admin_bot.common.BadRequestException
 import com.admin_bot.common.handleCommonErrors
 import com.admin_bot.environment.AppEnvironment
 import com.admin_bot.features.registration.data.RegisterParams
@@ -22,8 +23,7 @@ fun Route.registerRoute(appEnvironment: AppEnvironment) {
             handleCommonErrors {
                 val registerParams = call.receive<RegisterParams>()
                 if(!validator(registerParams.password)){
-                    call.respond(HttpStatusCode.BadRequest, ResponseText.incorrectPassword)
-                    return@handleCommonErrors
+                    throw BadRequestException(ResponseText.incorrectPassword)
                 }
                 val botId = withContext(Dispatchers.Default) {
                     registrationRepository.register(registerParams)

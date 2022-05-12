@@ -6,4 +6,5 @@ import io.ktor.server.routing.*
 fun Route.registrationRouting(appEnvironment: AppEnvironment){
     registerRoute(appEnvironment)
     registerCompleteRoute(appEnvironment)
+    registerOtpRoute(appEnvironment)
 }

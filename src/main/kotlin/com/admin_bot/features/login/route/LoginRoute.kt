@@ -1,7 +1,7 @@
 package com.admin_bot.features.login.route
 
-import com.admin_bot.common.ResponseText
-import com.admin_bot.common.handleCommonErrors
+import com.admin_bot.config.ResponseText
+import com.admin_bot.common.errors.handleCommonErrors
 import com.admin_bot.environment.AppEnvironment
 import com.admin_bot.features.login.data.LoginParams
 import io.ktor.http.*

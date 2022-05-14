@@ -1,8 +1,8 @@
 package com.admin_bot.features.authentification.model
 
-import com.admin_bot.common.AppException
-import com.admin_bot.common.ExpiredException
-import com.admin_bot.common.ResponseText
+import com.admin_bot.common.errors.AppException
+import com.admin_bot.common.errors.ExpiredException
+import com.admin_bot.config.ResponseText
 import com.admin_bot.config.ServerConfig
 import com.admin_bot.features.authentification.data.AuthTokens
 import com.auth0.jwt.JWT

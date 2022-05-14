@@ -1,6 +1,6 @@
 package com.admin_bot.plugins.mocks.database
 
-import com.admin_bot.features.bot.data.BotInfo
+import com.admin_bot.features.bot_managing.data.BotInfo
 import com.admin_bot.features.chat.data.ChatInfo
 import com.admin_bot.features.messages.data.Message
 import com.admin_bot.features.registration.data.OtpData

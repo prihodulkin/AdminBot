@@ -1,8 +1,8 @@
-package com.admin_bot.features_test
+package com.admin_bot.features
 
-import com.admin_bot.features.bot.data.BotInfo
+import com.admin_bot.features.bot_managing.data.BotInfo
 import com.admin_bot.features.registration.data.RegisterParams
-import com.admin_bot.common.ResponseText
+import com.admin_bot.config.ResponseText
 import com.admin_bot.createJsonClient
 import com.admin_bot.plugins.mocks.database.MockDatabase
 import com.admin_bot.plugins.mocks.model.authentication.MockJwtAuthenticator

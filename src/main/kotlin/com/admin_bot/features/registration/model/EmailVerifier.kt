@@ -1,7 +1,7 @@
 package com.admin_bot.features.registration.model
 
-import com.admin_bot.common.ExpiredException
-import com.admin_bot.common.ResponseText
+import com.admin_bot.common.errors.ExpiredException
+import com.admin_bot.config.ResponseText
 import com.admin_bot.config.ServerConfig
 import com.admin_bot.features.registration.data.OtpData
 import io.ktor.http.*

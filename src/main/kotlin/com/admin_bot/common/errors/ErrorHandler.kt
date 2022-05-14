@@ -1,7 +1,6 @@
-package com.admin_bot.common
+package com.admin_bot.common.errors
 
-import com.admin_bot.common.AppException
-import com.admin_bot.common.ResponseText
+import com.admin_bot.config.ResponseText
 
 import io.ktor.http.*
 import io.ktor.server.application.*

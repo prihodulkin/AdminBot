@@ -1,4 +1,4 @@
-package com.admin_bot.common
+package com.admin_bot.config
 
 class ResponseText {
     companion object{
@@ -7,20 +7,17 @@ class ResponseText {
         const val incorrectPassword =
             "Password should contains at least 8 symbols including at least one digit, one upper case letter and one lowercase letter"
         const val accessTokenIsAlreadyUsed = "The submitted access token is already in use by another bot"
-        const val emailAlreadyUsed = "The submitted email is already in use by another bot"
-        const val accessTokenValidationFailed = "Token is not valid or has expired"
+        const val emailIsAlreadyUsed = "The submitted email is already in use by another bot"
         const val loginFailed = "Login has failed because of wrong email (accessToken) or password"
         const val useOnlyEmailOrAccessTokenForLogin = "You shouldn't use both email and access token for login"
         const val useEmailOrAccessTokenForLogin = "You should send 'email' or 'accessToken' parameters"
         const val incorrectRefreshToken = "Refresh token is incorrect"
         const val refreshTokenIsExpired = "Refresh token is expired"
         const val incorrectEmailFormat = "Incorrect email format"
-        const val emailIsAlreadyUsed = "Email is already used"
         const val otpWasExpired = "One-time password was expired"
         fun otpWasSent(email: String): String {
             return "One-time password was sent to $email"
         }
-
         const val emailWasConfirmed = "Email was confirmed"
         const val incorrectOtp = "Incorrect otp was sent"
     }

@@ -1,7 +1,7 @@
 package com.admin_bot.features.login.model
 
-import com.admin_bot.common.ResponseText
-import com.admin_bot.common.BadRequestException
+import com.admin_bot.config.ResponseText
+import com.admin_bot.common.errors.BadRequestException
 import com.admin_bot.features.login.data.LoginParams
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope

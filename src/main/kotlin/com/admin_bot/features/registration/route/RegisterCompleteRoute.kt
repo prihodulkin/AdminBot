@@ -1,9 +1,9 @@
 package com.admin_bot.features.registration.route
 
-import com.admin_bot.common.ResponseText
+import com.admin_bot.config.ResponseText
 import com.admin_bot.common.Validators
-import com.admin_bot.common.BadRequestException
-import com.admin_bot.common.handleCommonErrors
+import com.admin_bot.common.errors.BadRequestException
+import com.admin_bot.common.errors.handleCommonErrors
 import com.admin_bot.config.botId
 import com.admin_bot.environment.AppEnvironment
 import com.admin_bot.features.registration.data.CompleteRegistrationParams
@@ -24,7 +24,7 @@ fun Route.registerCompleteRoute(appEnvironment: AppEnvironment) {
                     val email = call.receive<CompleteRegistrationParams>().email
                     if (Validators.validateEmail(email)) {
                         if (!registrationManager.isEmailNotBusy(email)){
-                            throw BadRequestException(ResponseText.emailAlreadyUsed)
+                            throw BadRequestException(ResponseText.emailIsAlreadyUsed)
                         }
                         val botId = call.botId()
                         emailVerifier.generateAndSendOtp(botId, email)

@@ -1,7 +1,7 @@
 package com.admin_bot.plugins.mocks.model.registration
 
-import com.admin_bot.common.IncorrectIdException
-import com.admin_bot.features.bot.data.BotInfo
+import com.admin_bot.common.errors.IncorrectIdException
+import com.admin_bot.features.bot_managing.data.BotInfo
 import com.admin_bot.features.registration.data.RegisterParams
 import com.admin_bot.features.registration.model.RegistrationManager
 import com.admin_bot.plugins.mocks.database.MockDatabase

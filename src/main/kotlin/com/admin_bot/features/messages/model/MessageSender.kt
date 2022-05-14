@@ -1,6 +1,6 @@
 package com.admin_bot.features.messages.model
 
-import com.admin_bot.features.bot.data.BotInfo
+import com.admin_bot.features.bot_managing.data.BotInfo
 import kotlinx.datetime.Instant
 
 abstract class MessageSender(private val botInfo: BotInfo) {

@@ -1,9 +1,10 @@
 package com.admin_bot.features.bot_managing.model
 
 import com.admin_bot.features.bot_managing.data.BotActionConfig
+import com.admin_bot.features.bot_managing.data.BotInfo
 
-interface BotActionConfigRepository {
-   suspend fun getActionConfig(botId: Long): BotActionConfig
-   suspend fun getAllConfigs(): List<BotActionConfig>
+interface BotInfoRepository {
+   suspend fun getInfo(botId: Long): BotInfo
+   suspend fun getAllInfo(): List<BotInfo>
    suspend fun saveConfig(botId: Long, config: BotActionConfig)
 }

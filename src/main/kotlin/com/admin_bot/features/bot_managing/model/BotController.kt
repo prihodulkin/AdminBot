@@ -4,17 +4,18 @@ import com.admin_bot.common.async.ListenableStream
 import com.admin_bot.features.bot.model.OnMessageActionType
 import com.admin_bot.features.bot.model.OnMessageActionsFactory
 import com.admin_bot.features.bot_managing.data.BotActionConfig
+import com.admin_bot.features.bot_managing.data.BotActionConfigChange
 import com.admin_bot.features.messages.data.Message
 
 class BotController(
     private var actionConfig: BotActionConfig,
     private val actionsFactory: OnMessageActionsFactory,
     messagesStream: ListenableStream<Message>,
-    configStream: ListenableStream<BotActionConfig>,
+    configStream: ListenableStream<BotActionConfigChange>,
 ) {
 
     private val configSubscription = configStream.listen {
-        actionConfig = event
+        actionConfig = event.apply(actionConfig)
     }
 
     private val messagesSubscription = messagesStream.listen {

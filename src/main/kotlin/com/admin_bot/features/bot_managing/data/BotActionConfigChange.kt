@@ -5,10 +5,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class BotActionConfigChange(
-    private val enabled: Boolean?,
-    private val universalActionType: OnMessageActionType?,
-    private val chatsActionTypes: Map<Long, OnMessageActionType>?,
-    private val replyText: String? = null,
+    val enabled: Boolean?,
+    val universalActionType: OnMessageActionType?,
+    val chatsActionTypes: Map<Long, OnMessageActionType>?,
+    val replyText: String? = null,
 ) {
     fun apply(actionConfig: BotActionConfig): BotActionConfig = actionConfig.copy(
         enabled = enabled ?: actionConfig.enabled,

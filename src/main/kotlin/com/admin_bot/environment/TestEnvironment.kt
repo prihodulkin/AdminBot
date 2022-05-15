@@ -4,6 +4,10 @@ import com.admin_bot.config.JwtConfig
 import com.admin_bot.config.ServerConfig
 import com.admin_bot.features.authentification.model.JwtAuthenticator
 import com.admin_bot.common.Validators
+import com.admin_bot.features.bot.model.BotFactory
+import com.admin_bot.features.bot_managing.model.AdminConfigChangesHandler
+import com.admin_bot.features.bot_managing.model.BotInfoRepository
+import com.admin_bot.features.classification.model.ClassifierRepository
 import com.admin_bot.features.login.model.LoginRepository
 import com.admin_bot.features.registration.model.EmailVerifier
 import com.admin_bot.features.registration.model.OtpStorage
@@ -11,6 +15,10 @@ import com.admin_bot.features.registration.model.RegistrationManager
 import com.admin_bot.features.registration.model.VerificationEmailSender
 import com.admin_bot.plugins.mocks.database.MockDatabase
 import com.admin_bot.plugins.mocks.model.authentication.MockJwtAuthenticator
+import com.admin_bot.plugins.mocks.model.bot.MockBotFactory
+import com.admin_bot.plugins.mocks.model.bot.MockOnMessageActionLogger
+import com.admin_bot.plugins.mocks.model.bot_managing.MockBotInfoRepository
+import com.admin_bot.plugins.mocks.model.classifiaction.MockSingleClassifierRepository
 import com.admin_bot.plugins.mocks.model.login.MockLoginRepository
 import com.admin_bot.plugins.mocks.model.registration.MockOtpStorage
 import com.admin_bot.plugins.mocks.model.registration.MockRegistrationManager
@@ -23,7 +31,7 @@ class TestEnvironment(
     mockDatabase: MockDatabase,
     val useMockAuthTokens: Boolean = true,
     mockServerConfig: ServerConfig? = null
-) : AppEnvironment {
+) : AppEnvironment() {
     companion object {
         val defaultMockServerConfig = ServerConfig(
             accessTokenLifetime = 1.toDuration(DurationUnit.SECONDS),
@@ -47,6 +55,14 @@ class TestEnvironment(
     override val verificationEmailSender: VerificationEmailSender
     override val emailVerifier: EmailVerifier
     override val otpStorage: OtpStorage
+    override val botFactory: BotFactory
+    override val classifierRepository: ClassifierRepository
+    override val adminConfigChangesHandler =AdminConfigChangesHandler()
+    override val botInfoRepository: BotInfoRepository
+
+    private val mockOnMessageActionLogger = MockOnMessageActionLogger()
+
+
 
     init {
         serverConfig = mockServerConfig ?: defaultMockServerConfig
@@ -56,5 +72,8 @@ class TestEnvironment(
         verificationEmailSender = MockVerificationEmailSender(serverConfig)
         otpStorage = MockOtpStorage(mockDatabase)
         emailVerifier = EmailVerifier(verificationEmailSender, otpStorage, serverConfig)
+        botFactory = MockBotFactory(mockOnMessageActionLogger)
+        classifierRepository = MockSingleClassifierRepository()
+        botInfoRepository = MockBotInfoRepository(mockDatabase)
     }
 }

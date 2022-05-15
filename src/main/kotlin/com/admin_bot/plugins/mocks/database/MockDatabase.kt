@@ -2,6 +2,8 @@ package com.admin_bot.plugins.mocks.database
 
 import com.admin_bot.features.bot_managing.data.BotInfo
 import com.admin_bot.features.chat.data.ChatInfo
+import com.admin_bot.features.classification.data.ClassifierType
+import com.admin_bot.features.classification.model.Classifier
 import com.admin_bot.features.messages.data.Message
 import com.admin_bot.features.registration.data.OtpData
 import com.admin_bot.features.user.data.UserInfo
@@ -13,8 +15,9 @@ data class MockDatabase(
     var users: MutableList<UserInfo>?= mutableListOf(),
     var chats: MutableList<ChatInfo>?= mutableListOf(),
     var messages: MutableList<Message>?= mutableListOf(),
-    var savedMessages: MutableList<Message>?= mutableListOf()
-
+    var savedMessages: MutableList<Message>?= mutableListOf(),
+    var classifiers: MutableMap<Long, MutableMap<ClassifierType, Classifier>>?= mutableMapOf(),
+    var classifier: Classifier? =null
 ){
     companion object{
         /**
@@ -29,7 +32,9 @@ data class MockDatabase(
                 users = null,
                 chats = null,
                 messages = null,
-                savedMessages = null
+                savedMessages = null,
+                classifiers = null,
+                classifier = null,
             )
         }
     }

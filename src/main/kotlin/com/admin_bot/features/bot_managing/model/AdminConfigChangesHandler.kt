@@ -4,7 +4,7 @@ import com.admin_bot.common.async.ListenableStream
 import com.admin_bot.common.async.Stream
 import com.admin_bot.features.bot_managing.data.BotActionConfigChange
 
-class BotActionConfigChangesHandler {
+class AdminConfigChangesHandler {
     private val pConfigChanges = Stream<Pair<Long, BotActionConfigChange>>()
     val configChanges: ListenableStream<Pair<Long, BotActionConfigChange>>
         get() = pConfigChanges

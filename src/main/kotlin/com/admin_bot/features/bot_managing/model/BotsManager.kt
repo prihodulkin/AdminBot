@@ -6,8 +6,10 @@ import com.admin_bot.common.async.StreamTransformer
 import com.admin_bot.features.bot.model.BotFactory
 import com.admin_bot.features.bot_managing.data.BotActionConfigChange
 import com.admin_bot.features.bot_managing.data.BotInfo
+import com.admin_bot.features.classification.model.ClassifierRepository
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 
@@ -27,6 +29,7 @@ class BotsManager(
     private val botInfoRepository: BotInfoRepository,
     private val botFactory: BotFactory,
     private val configChanges: ListenableStream<Pair<Long, BotActionConfigChange>>,
+    private val classifierRepository: ClassifierRepository,
 ) {
     private val runData = mutableMapOf<Long, BotRunData>()
     private val configChangesSubscription = configChanges.listen {
@@ -57,19 +60,24 @@ class BotsManager(
         }
     }
 
-    private fun runBot(botInfo: BotInfo) {
+    private suspend fun runBot(botInfo: BotInfo) = coroutineScope  {
+        val botId = botInfo.id
         val bot = botFactory.createBot(botInfo)
+        val classifier = classifierRepository.getClassifier(botInfo.actionConfig.classifierType, botId)
         val configChangesTransformer =
-            StreamTransformer<Pair<Long, BotActionConfigChange>, BotActionConfigChange>(
+            StreamTransformer(
                 stream = configChanges,
                 filteringCondition = { pair -> pair.first == botInfo.id },
                 mapper = { pair -> pair.second }
             )
         val controller = BotController(
+            botId = botId,
             actionConfig = botInfo.actionConfig,
-            actionsFactory = bot.actionsFactory,
+            actionsFactory = OnMessageActionsCachingProxyFactory(bot.actionsFactory),
             messagesStream = bot.messageReceiver.messages,
-            configStream = configChangesTransformer
+            configStream = configChangesTransformer,
+            classifierRepository = classifierRepository,
+            classifier = classifier,
         )
         runData[botInfo.id] = BotRunData(controller, configChangesTransformer)
     }

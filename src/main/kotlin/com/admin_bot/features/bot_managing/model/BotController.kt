@@ -5,17 +5,27 @@ import com.admin_bot.features.bot.model.OnMessageActionType
 import com.admin_bot.features.bot.model.OnMessageActionsFactory
 import com.admin_bot.features.bot_managing.data.BotActionConfig
 import com.admin_bot.features.bot_managing.data.BotActionConfigChange
+import com.admin_bot.features.classification.model.Classifier
+import com.admin_bot.features.classification.model.ClassifierRepository
 import com.admin_bot.features.messages.data.Message
+import kotlinx.coroutines.coroutineScope
 
 class BotController(
+    private val botId: Long,
     private var actionConfig: BotActionConfig,
     private val actionsFactory: OnMessageActionsFactory,
+    private val classifierRepository: ClassifierRepository,
+    private var classifier: Classifier,
     messagesStream: ListenableStream<Message>,
     configStream: ListenableStream<BotActionConfigChange>,
 ) {
 
     private val configSubscription = configStream.listen {
-        actionConfig = event.apply(actionConfig)
+        val newActionConfig = event.apply(actionConfig)
+        if (newActionConfig.classifierType != actionConfig.classifierType) {
+            classifier = classifierRepository.getClassifier(newActionConfig.classifierType, botId)
+        }
+        actionConfig = newActionConfig
     }
 
     private val messagesSubscription = messagesStream.listen {
@@ -30,9 +40,14 @@ class BotController(
         }
     }
 
-    private fun executeActionOfExactType(actionType: OnMessageActionType, message: Message) {
-        val action = actionsFactory.getAction(actionType)
-        action.execute(message, actionConfig)
+    private suspend fun executeActionOfExactType(
+        actionType: OnMessageActionType,
+        message: Message
+    ) = coroutineScope {
+        if (!classifier.isAcceptable(message)) {
+            val action = actionsFactory.getAction(actionType)
+            action.execute(message, actionConfig)
+        }
     }
 
     /**

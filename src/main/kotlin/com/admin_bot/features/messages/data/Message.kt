@@ -11,6 +11,4 @@ data class Message(
     val userId: Long,
     val chatId: Long,
     val createdAt: Instant,
-    val botClassification: MessageCategory,
-    val adminClassification: MessageCategory,
     )

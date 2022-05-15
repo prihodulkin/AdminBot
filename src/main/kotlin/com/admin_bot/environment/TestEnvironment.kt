@@ -1,12 +1,13 @@
 package com.admin_bot.environment
 
+import com.admin_bot.common.Validators
 import com.admin_bot.config.JwtConfig
 import com.admin_bot.config.ServerConfig
 import com.admin_bot.features.authentification.model.JwtAuthenticator
-import com.admin_bot.common.Validators
 import com.admin_bot.features.bot.model.BotFactory
 import com.admin_bot.features.bot_managing.model.AdminConfigChangesHandler
 import com.admin_bot.features.bot_managing.model.BotInfoRepository
+import com.admin_bot.features.bot_managing.model.BotsManager
 import com.admin_bot.features.classification.model.ClassifierRepository
 import com.admin_bot.features.login.model.LoginRepository
 import com.admin_bot.features.registration.model.EmailVerifier
@@ -57,11 +58,11 @@ class TestEnvironment(
     override val otpStorage: OtpStorage
     override val botFactory: BotFactory
     override val classifierRepository: ClassifierRepository
-    override val adminConfigChangesHandler =AdminConfigChangesHandler()
+    override val adminConfigChangesHandler = AdminConfigChangesHandler()
     override val botInfoRepository: BotInfoRepository
+    override val botsManager: BotsManager
 
-    private val mockOnMessageActionLogger = MockOnMessageActionLogger()
-
+    val mockOnMessageActionLogger = MockOnMessageActionLogger()
 
 
     init {
@@ -72,8 +73,14 @@ class TestEnvironment(
         verificationEmailSender = MockVerificationEmailSender(serverConfig)
         otpStorage = MockOtpStorage(mockDatabase)
         emailVerifier = EmailVerifier(verificationEmailSender, otpStorage, serverConfig)
-        botFactory = MockBotFactory(mockOnMessageActionLogger)
+        botFactory = MockBotFactory(mockOnMessageActionLogger, mockDatabase)
         classifierRepository = MockSingleClassifierRepository()
         botInfoRepository = MockBotInfoRepository(mockDatabase)
+        botsManager = BotsManager(
+            botInfoRepository = botInfoRepository,
+            botFactory = botFactory,
+            configChanges = adminConfigChangesHandler.configChanges,
+            classifierRepository = classifierRepository,
+        )
     }
 }

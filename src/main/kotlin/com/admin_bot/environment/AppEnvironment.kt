@@ -26,10 +26,7 @@ abstract class AppEnvironment {
     abstract val classifierRepository: ClassifierRepository
     abstract val adminConfigChangesHandler: AdminConfigChangesHandler
     abstract val botInfoRepository: BotInfoRepository
-    val botsManager = BotsManager(
-        botInfoRepository = botInfoRepository,
-        botFactory = botFactory,
-        configChanges = adminConfigChangesHandler.configChanges,
-        classifierRepository = classifierRepository,
-    )
+    abstract val botsManager: BotsManager
+
+
 }

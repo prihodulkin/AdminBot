@@ -12,28 +12,28 @@ interface MockOnMessageAction : OnMessageAction{
     val botInfo: BotInfo
 }
 
-open class MockBanAction(
-    val botInfo: BotInfo,
+data class MockBanAction(
+    override val botInfo: BotInfo,
     private val mockOnMessageActionLogger: MockOnMessageActionLogger
-) : BanAction(), OnMessageAction {
+) : BanAction(), MockOnMessageAction {
     override fun execute(message: Message, actionConfig: BotActionConfig) {
         mockOnMessageActionLogger.log(message to this)
     }
 }
 
-open class MockDeleteAction(
-    val botInfo: BotInfo,
+data class MockDeleteAction(
+    override val botInfo: BotInfo,
     private val mockOnMessageActionLogger: MockOnMessageActionLogger
-) : DeleteAction(), OnMessageAction {
+) : DeleteAction(), MockOnMessageAction {
     override fun execute(message: Message, actionConfig: BotActionConfig) {
         mockOnMessageActionLogger.log(message to this)
     }
 }
 
-open class MockReplyAction(
-    botInfo: BotInfo,
+data class MockReplyAction(
+    override val botInfo: BotInfo,
     private val mockOnMessageActionLogger: MockOnMessageActionLogger
-) : ReplyAction(), OnMessageAction {
+) : ReplyAction(), MockOnMessageAction {
     override fun execute(message: Message, actionConfig: BotActionConfig) {
         mockOnMessageActionLogger.log(message to this)
     }

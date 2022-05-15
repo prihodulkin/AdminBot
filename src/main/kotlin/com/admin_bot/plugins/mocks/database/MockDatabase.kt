@@ -7,17 +7,19 @@ import com.admin_bot.features.classification.model.Classifier
 import com.admin_bot.features.messages.data.Message
 import com.admin_bot.features.registration.data.OtpData
 import com.admin_bot.features.user.data.UserInfo
+import com.admin_bot.plugins.mocks.model.bot.MockMessageReceiver
 
 data class MockDatabase(
-    var bots: MutableList<BotInfo>?= mutableListOf(),
-    var botPasswords: MutableMap<Long, String>?= mutableMapOf(),
-    var oneTimePasswords: MutableMap<Long, OtpData>?= mutableMapOf(),
-    var users: MutableList<UserInfo>?= mutableListOf(),
-    var chats: MutableList<ChatInfo>?= mutableListOf(),
-    var messages: MutableList<Message>?= mutableListOf(),
-    var savedMessages: MutableList<Message>?= mutableListOf(),
-    var classifiers: MutableMap<Long, MutableMap<ClassifierType, Classifier>>?= mutableMapOf(),
-    var classifier: Classifier? =null
+    var bots: MutableList<BotInfo>? = mutableListOf(),
+    var botPasswords: MutableMap<Long, String>? = mutableMapOf(),
+    var oneTimePasswords: MutableMap<Long, OtpData>? = mutableMapOf(),
+    var users: MutableList<UserInfo>? = mutableListOf(),
+    var chats: MutableList<ChatInfo>? = mutableListOf(),
+    var messages: MutableList<Message>? = mutableListOf(),
+    var savedMessages: MutableList<Message>? = mutableListOf(),
+    var classifiers: MutableMap<Long, MutableMap<ClassifierType, Classifier>>? = mutableMapOf(),
+    var classifier: Classifier? = null,
+    var messageReceivers: Map<Long, MockMessageReceiver>? = null
 ){
     companion object{
         /**

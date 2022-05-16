@@ -39,7 +39,9 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.3.2")
     implementation ("net.axay:simplekotlinmail-core:1.4.0")
     implementation ("net.axay:simplekotlinmail-client:1.4.0")
+    implementation ("dev.inmo:tgbotapi:1.1.0")
 
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+
 }

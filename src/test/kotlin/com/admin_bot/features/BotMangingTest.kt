@@ -13,9 +13,12 @@ import com.admin_bot.plugins.mocks.model.bot.MockDeleteAction
 import com.admin_bot.plugins.mocks.model.bot.MockMessageReceiver
 import com.admin_bot.runner.AppTestRunner
 import io.ktor.server.testing.*
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import org.junit.Test
+import kotlin.random.Random.Default.nextLong
 import kotlin.test.assertEquals
 
 class BotMangingTest : AppTestRunner() {
@@ -269,4 +272,34 @@ class BotMangingTest : AppTestRunner() {
         assertEquals(badMessageChat1 to deleteAction, loggedItems[loggedItems.size - 2])
         assertEquals(badMessageChat2 to banAction, loggedItems.last())
     }
+
+    @Test
+    fun testBotManagerLoadWithSingleBot() = testApplication {
+        val mockMessageReceiver = MockMessageReceiver()
+        val botInfo = firstBot
+        val mockDatabase = MockDatabase(
+            bots = mutableListOf(
+                botInfo
+            ),
+            botPasswords = mutableMapOf(1L to "Qwerty123"),
+            messageReceivers = mutableMapOf(1L to mockMessageReceiver)
+        )
+        val testEnvironment = TestEnvironment(mockDatabase)
+        val logger = testEnvironment.mockOnMessageActionLogger
+        application {
+            runWithTestEnvironment(mockDatabase)
+        }
+        delay(10)
+        coroutineScope {
+            for (i in 1..200) {
+                delay(1)
+                launch {
+                    mockMessageReceiver.addMessage(badMessage)
+                }
+            }
+        }
+        delay(100)
+        assertEquals(200, logger.loggedItems.size)
+    }
+
 }

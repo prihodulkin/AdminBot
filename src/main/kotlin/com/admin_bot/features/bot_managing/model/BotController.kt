@@ -8,7 +8,6 @@ import com.admin_bot.features.bot_managing.data.BotActionConfigChange
 import com.admin_bot.features.classification.model.Classifier
 import com.admin_bot.features.classification.model.ClassifierRepository
 import com.admin_bot.features.messages.data.Message
-import kotlinx.coroutines.coroutineScope
 
 class BotController(
     private val botId: Long,
@@ -43,7 +42,7 @@ class BotController(
     private suspend fun executeActionOfExactType(
         actionType: OnMessageActionType,
         message: Message
-    ) = coroutineScope {
+    ) {
         if (!classifier.isAcceptable(message)) {
             val action = actionsFactory.getAction(actionType)
             action.execute(message, actionConfig)

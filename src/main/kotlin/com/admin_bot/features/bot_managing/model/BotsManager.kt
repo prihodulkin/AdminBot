@@ -36,12 +36,13 @@ class BotsManager(
         val botId = event.first
         val configChange = event.second
         val botInfo = botInfoRepository.getInfo(botId)
-        if (configChange.enabled == true || !runData.containsKey(botId)) {
-            runBot(botInfo)
+        val config = configChange.apply(botInfo.actionConfig)
+        if (configChange.enabled == true) {
+            val newBotInfo = botInfo.copy(actionConfig = config)
+            runBot(newBotInfo)
         } else if (configChange.enabled == false) {
             disposeRunData(botId)
         }
-        val config = configChange.apply(botInfo.actionConfig)
         botInfoRepository.saveConfig(botId, config)
     }
 

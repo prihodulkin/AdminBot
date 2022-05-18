@@ -16,7 +16,7 @@ data class MockBanAction(
     override val botInfo: BotInfo,
     private val mockOnMessageActionLogger: MockOnMessageActionLogger
 ) : BanAction(), MockOnMessageAction {
-    override fun execute(message: Message, actionConfig: BotActionConfig) {
+    override suspend fun execute(message: Message, actionConfig: BotActionConfig) {
         mockOnMessageActionLogger.log(message to this)
     }
 }
@@ -25,7 +25,7 @@ data class MockDeleteAction(
     override val botInfo: BotInfo,
     private val mockOnMessageActionLogger: MockOnMessageActionLogger
 ) : DeleteAction(), MockOnMessageAction {
-    override fun execute(message: Message, actionConfig: BotActionConfig) {
+    override suspend fun execute(message: Message, actionConfig: BotActionConfig) {
         mockOnMessageActionLogger.log(message to this)
     }
 }
@@ -34,7 +34,7 @@ data class MockReplyAction(
     override val botInfo: BotInfo,
     private val mockOnMessageActionLogger: MockOnMessageActionLogger
 ) : ReplyAction(), MockOnMessageAction {
-    override fun execute(message: Message, actionConfig: BotActionConfig) {
+    override suspend fun execute(message: Message, actionConfig: BotActionConfig) {
         mockOnMessageActionLogger.log(message to this)
     }
 }

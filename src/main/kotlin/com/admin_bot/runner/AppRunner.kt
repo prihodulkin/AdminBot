@@ -7,11 +7,19 @@ import com.admin_bot.features.login.route.loginRoute
 import com.admin_bot.features.registration.route.registrationRouting
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
+import io.ktor.server.engine.*
+import io.ktor.server.netty.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.routing.*
 
 
 open class AppRunner {
+    fun run(appEnvironment: AppEnvironment) {
+        embeddedServer(Netty, port = 8080, host = "0.0.0.0") {
+            run(appEnvironment)
+        }.start(wait = true)
+    }
+
     fun Application.run(appEnvironment: AppEnvironment) {
         install(ContentNegotiation) {
             json()

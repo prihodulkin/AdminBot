@@ -67,7 +67,7 @@ abstract class ReplyAction : OnMessageAction {
  * Executes nothing
  */
 class NoneAction : OnMessageAction {
-    override fun execute(message: Message, actionConfig: BotActionConfig) {}
+   override suspend fun execute(message: Message, actionConfig: BotActionConfig) {}
 
     final override val type: OnMessageActionType
         get() = OnMessageActionType.NONE

@@ -36,4 +36,4 @@ out/
 .vscode/
 
 ### Confidential information ###
-!**/src/main/com/admin/bot/confidential/
+src/main/com/admin_bot/confidential/

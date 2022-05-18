@@ -36,4 +36,4 @@ out/
 .vscode/
 
 ### Confidential information ###
-src/main/com/admin_bot/confidential/
+src/main/kotlin/com/admin_bot/confidential/

@@ -34,8 +34,8 @@ enum class OnMessageActionType {
  * Action can be executed when message is received
  */
 interface OnMessageAction {
-    abstract fun execute(message: Message, actionConfig: BotActionConfig)
-    abstract val type: OnMessageActionType
+    suspend fun execute(message: Message, actionConfig: BotActionConfig)
+    val type: OnMessageActionType
 }
 
 

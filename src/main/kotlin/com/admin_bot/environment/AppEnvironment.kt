@@ -12,6 +12,7 @@ import com.admin_bot.features.registration.model.EmailVerifier
 import com.admin_bot.features.registration.model.OtpStorage
 import com.admin_bot.features.registration.model.RegistrationManager
 import com.admin_bot.features.registration.model.VerificationEmailSender
+import org.slf4j.ILoggerFactory
 
 abstract class AppEnvironment {
     abstract val serverConfig: ServerConfig
@@ -27,6 +28,7 @@ abstract class AppEnvironment {
     abstract val adminConfigChangesHandler: AdminConfigChangesHandler
     abstract val botInfoRepository: BotInfoRepository
     abstract val botsManager: BotsManager
+    abstract val loggerFactory: ILoggerFactory
 
 
 }

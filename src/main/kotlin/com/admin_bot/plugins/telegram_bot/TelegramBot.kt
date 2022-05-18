@@ -13,26 +13,35 @@ import dev.inmo.tgbotapi.bot.ktor.telegramBot
 import dev.inmo.tgbotapi.extensions.utils.shortcuts.textMessages
 import dev.inmo.tgbotapi.extensions.utils.updates.retrieving.longPolling
 import kotlinx.coroutines.Dispatchers
+import org.slf4j.Logger
 
-class TelegramBot(val token: String): Bot() {
+class TelegramBot(
+    val token: String,
+    logger: Logger,
+    isLoggingEnabled: Boolean = false
+) :
+    Bot() {
     private val bot = telegramBot(token)
-    override val messageReceiver = TelegramMessageReceiver(bot)
-
-
-    override val actionsFactory: OnMessageActionsFactory
-        get() = TODO("Not yet implemented")
-
+    override val messageReceiver = TelegramMessageReceiver(bot, logger, isLoggingEnabled)
+    override val actionsFactory: OnMessageActionsFactory = TelegramOnMessageActionsFactory(bot)
 }
 
-class TelegramMessageReceiver(private val bot: RequestsExecutor): MessageReceiver{
+class TelegramMessageReceiver(
+    bot: RequestsExecutor,
+    private val logger: Logger,
+    private val isLoggingEnabled: Boolean = false
+) : MessageReceiver {
     private val pMessages = Stream<Message>()
     private val scope = CoroutineScope(Dispatchers.Default) {}
     override val messages: ListenableStream<Message>
         get() = pMessages
+
     init {
         bot.longPolling {
             textMessages().subscribe(scope) {
-                println(it)
+                if(isLoggingEnabled){
+                    logger.info("New message: $it")
+                }
                 pMessages.add(it.toAppMessage())
 
             }

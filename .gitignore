@@ -34,3 +34,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Confidential information ###
+src/main/com/admin/bot/confidential/

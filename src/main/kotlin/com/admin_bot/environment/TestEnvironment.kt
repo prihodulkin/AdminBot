@@ -24,6 +24,8 @@ import com.admin_bot.plugins.mocks.model.login.MockLoginRepository
 import com.admin_bot.plugins.mocks.model.registration.MockOtpStorage
 import com.admin_bot.plugins.mocks.model.registration.MockRegistrationManager
 import com.admin_bot.plugins.mocks.model.registration.MockVerificationEmailSender
+import org.slf4j.ILoggerFactory
+import org.slf4j.LoggerFactory
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
@@ -31,7 +33,8 @@ import kotlin.time.toDuration
 class TestEnvironment(
     mockDatabase: MockDatabase,
     val useMockAuthTokens: Boolean = true,
-    mockServerConfig: ServerConfig? = null
+    mockServerConfig: ServerConfig? = null,
+    customBotFactory: BotFactory? = null,
 ) : AppEnvironment() {
     companion object {
         val defaultMockServerConfig = ServerConfig(
@@ -61,6 +64,7 @@ class TestEnvironment(
     override val adminConfigChangesHandler = AdminConfigChangesHandler()
     override val botInfoRepository: BotInfoRepository
     override val botsManager: BotsManager
+    override val loggerFactory: ILoggerFactory = LoggerFactory.getILoggerFactory()
 
     val mockOnMessageActionLogger = MockOnMessageActionLogger()
 
@@ -81,6 +85,7 @@ class TestEnvironment(
             botFactory = botFactory,
             configChanges = adminConfigChangesHandler.configChanges,
             classifierRepository = classifierRepository,
+            loggerFactory = loggerFactory
         )
     }
 }

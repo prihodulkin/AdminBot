@@ -1,19 +1,20 @@
 package com.admin_bot.plugins.telegram_bot
 
 import com.admin_bot.features.messages.data.Message
-import dev.inmo.tgbotapi.extensions.utils.extensions.raw.text
-import dev.inmo.tgbotapi.types.chatIdField
+import com.soywiz.klock.DateTime
+import dev.inmo.tgbotapi.extensions.utils.asTextMentionTextSource
+import dev.inmo.tgbotapi.types.MessageIdentifier
+import dev.inmo.tgbotapi.types.chat.Chat
 import dev.inmo.tgbotapi.types.message.abstracts.ContentMessage
 import dev.inmo.tgbotapi.types.message.content.TextContent
-import dev.inmo.tgbotapi.types.userIdField
+import dev.inmo.tgbotapi.types.message.textsources.TextMentionTextSource
 import kotlinx.datetime.Instant
 
-fun ContentMessage<TextContent>.toAppMessage(): Message {
-    return Message(
-        id = messageId,
-        text = text ?: "",
-        userId = userIdField.toLong(),
-        chatId = chatIdField.toLong(),
-        createdAt = Instant.parse(date.toString())
-    )
-}
+fun ContentMessage<TextContent>.toAppMessage(): Message = Message(
+    id = messageId,
+    text = content.text,
+    userId = content.textSources.last().asTextMentionTextSource()!!.user.id.chatId,
+    chatId = chat.id.chatId,
+    createdAt = Instant.parse(date.toString())
+)
+

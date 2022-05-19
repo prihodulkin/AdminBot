@@ -2,7 +2,8 @@ package com.admin_bot.plugins.telegram_bot
 
 import com.admin_bot.common.async.ListenableStream
 import com.admin_bot.common.async.Stream
-import com.admin_bot.common.errors.logErrorSuspend
+import com.admin_bot.common.logging.logError
+import com.admin_bot.common.logging.logMessage
 import com.admin_bot.features.bot.model.Bot
 import com.admin_bot.features.bot.model.BotFactory
 import com.admin_bot.features.bot.model.MessageReceiver
@@ -15,7 +16,7 @@ import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.bot.ktor.telegramBot
 import dev.inmo.tgbotapi.extensions.utils.shortcuts.textMessages
 import dev.inmo.tgbotapi.extensions.utils.updates.retrieving.longPolling
-import dev.inmo.tgbotapi.extensions.utils.updates.retrieving.startGettingOfUpdatesByLongPolling
+import io.ktor.util.logging.*
 import kotlinx.coroutines.Dispatchers
 import org.slf4j.ILoggerFactory
 import org.slf4j.Logger
@@ -41,7 +42,7 @@ class TelegramBot(
     Bot() {
     private val bot = telegramBot(token)
     override val messageReceiver = TelegramMessageReceiver(bot, logger, isLoggingEnabled)
-    override val actionsFactory: OnMessageActionsFactory = TelegramOnMessageActionsFactory(bot)
+    override val actionsFactory: OnMessageActionsFactory = TelegramOnMessageActionsFactory(bot, logger, isLoggingEnabled)
 }
 
 class TelegramMessageReceiver(
@@ -55,15 +56,12 @@ class TelegramMessageReceiver(
         get() = pMessages
 
     init {
-//        bot.startGettingOfUpdatesByLongPolling {
-//            println(it) // will be printed each update
-//        }
         bot.longPolling {
-            val scope = CoroutineScope(Dispatchers.Default) {}
+            val scope = CoroutineScope(Dispatchers.Default) { e -> logger.error(e) }
             textMessages().subscribe(scope) {
-                logger.logErrorSuspend {
-                    if(isLoggingEnabled){
-                        logger.info("New message: $it")
+                logger.logError {
+                    if (isLoggingEnabled) {
+                        logger.logMessage(it)
                     }
                     pMessages.add(it.toAppMessage())
                 }

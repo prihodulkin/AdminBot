@@ -1,7 +1,7 @@
 package com.admin_bot.features.bot_managing.model
 
 import com.admin_bot.common.async.ListenableStream
-import com.admin_bot.common.errors.logErrorSuspend
+import com.admin_bot.common.logging.logError
 import com.admin_bot.features.bot.model.OnMessageActionType
 import com.admin_bot.features.bot.model.OnMessageActionsFactory
 import com.admin_bot.features.bot_managing.data.BotActionConfig
@@ -23,7 +23,7 @@ class BotController(
 ) {
 
     private val configSubscription = configStream.listen {
-        logger.logErrorSuspend {
+        logger.logError {
             val newActionConfig = event.apply(actionConfig)
             if (newActionConfig.classifierType != actionConfig.classifierType) {
                 classifier = classifierRepository.getClassifier(newActionConfig.classifierType, botId)
@@ -34,7 +34,7 @@ class BotController(
     }
 
     private val messagesSubscription = messagesStream.listen {
-        logger.logErrorSuspend {
+        logger.logError {
             val universalActionType = actionConfig.universalActionType
             if (universalActionType != OnMessageActionType.NONE) {
                 executeActionOfExactType(universalActionType, event)
@@ -53,7 +53,7 @@ class BotController(
     ) {
         if (!classifier.isAcceptable(message)) {
             val action = actionsFactory.getAction(actionType)
-            logger.logErrorSuspend {
+            logger.logError {
                 action.execute(message, actionConfig)
             }
         }

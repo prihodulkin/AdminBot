@@ -17,7 +17,8 @@ fun main() {
             BotInfo(
                 id = 1, token = BotTokens.GREEK_BOT_TOKEN, actionConfig = BotActionConfig(
                     enabled = true,
-                    universalActionType = OnMessageActionType.DELETE
+                    universalActionType = OnMessageActionType.DELETE,
+                    replyText= "Не надо так"
                 )
             )
         )

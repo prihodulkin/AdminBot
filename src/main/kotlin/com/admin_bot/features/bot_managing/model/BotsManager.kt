@@ -3,7 +3,7 @@ package com.admin_bot.features.bot_managing.model
 
 import com.admin_bot.common.async.ListenableStream
 import com.admin_bot.common.async.StreamTransformer
-import com.admin_bot.common.errors.logErrorSuspend
+import com.admin_bot.common.logging.logError
 import com.admin_bot.features.bot.model.BotFactory
 import com.admin_bot.features.bot_managing.data.BotActionConfigChange
 import com.admin_bot.features.bot_managing.data.BotInfo
@@ -39,7 +39,7 @@ class BotsManager(
     private val logger = loggerFactory.getLogger(BotsManager::class.java.name)
 
     private val configChangesSubscription = configChanges.listen {
-        logger.logErrorSuspend {
+        logger.logError {
             val botId = event.first
             val configChange = event.second
             val botInfo = botInfoRepository.getInfo(botId)
@@ -70,7 +70,7 @@ class BotsManager(
     }
 
     private suspend fun runBot(botInfo: BotInfo) = coroutineScope {
-        logger.logErrorSuspend {
+        logger.logError {
             val botId = botInfo.id
             val bot = botFactory.createBot(botInfo)
             val classifier = classifierRepository.getClassifier(botInfo.actionConfig.classifierType, botId)

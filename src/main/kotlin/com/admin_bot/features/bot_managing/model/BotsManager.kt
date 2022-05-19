@@ -3,7 +3,7 @@ package com.admin_bot.features.bot_managing.model
 
 import com.admin_bot.common.async.ListenableStream
 import com.admin_bot.common.async.StreamTransformer
-import com.admin_bot.common.errors.logError
+import com.admin_bot.common.errors.logErrorSuspend
 import com.admin_bot.features.bot.model.BotFactory
 import com.admin_bot.features.bot_managing.data.BotActionConfigChange
 import com.admin_bot.features.bot_managing.data.BotInfo
@@ -33,13 +33,13 @@ class BotsManager(
     private val botFactory: BotFactory,
     private val configChanges: ListenableStream<Pair<Long, BotActionConfigChange>>,
     private val classifierRepository: ClassifierRepository,
-    private val loggerFactory: ILoggerFactory,
+    loggerFactory: ILoggerFactory,
 ) {
     private val runData = mutableMapOf<Long, BotRunData>()
     private val logger = loggerFactory.getLogger(BotsManager::class.java.name)
 
     private val configChangesSubscription = configChanges.listen {
-        logger.logError {
+        logger.logErrorSuspend {
             val botId = event.first
             val configChange = event.second
             val botInfo = botInfoRepository.getInfo(botId)
@@ -70,7 +70,7 @@ class BotsManager(
     }
 
     private suspend fun runBot(botInfo: BotInfo) = coroutineScope {
-        logger.logError {
+        logger.logErrorSuspend {
             val botId = botInfo.id
             val bot = botFactory.createBot(botInfo)
             val classifier = classifierRepository.getClassifier(botInfo.actionConfig.classifierType, botId)

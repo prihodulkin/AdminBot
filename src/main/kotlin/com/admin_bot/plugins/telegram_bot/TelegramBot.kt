@@ -2,6 +2,7 @@ package com.admin_bot.plugins.telegram_bot
 
 import com.admin_bot.common.async.ListenableStream
 import com.admin_bot.common.async.Stream
+import com.admin_bot.common.errors.logErrorSuspend
 import com.admin_bot.features.bot.model.Bot
 import com.admin_bot.features.bot.model.BotFactory
 import com.admin_bot.features.bot.model.MessageReceiver
@@ -14,6 +15,7 @@ import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.bot.ktor.telegramBot
 import dev.inmo.tgbotapi.extensions.utils.shortcuts.textMessages
 import dev.inmo.tgbotapi.extensions.utils.updates.retrieving.longPolling
+import dev.inmo.tgbotapi.extensions.utils.updates.retrieving.startGettingOfUpdatesByLongPolling
 import kotlinx.coroutines.Dispatchers
 import org.slf4j.ILoggerFactory
 import org.slf4j.Logger
@@ -48,18 +50,23 @@ class TelegramMessageReceiver(
     private val isLoggingEnabled: Boolean = false
 ) : MessageReceiver {
     private val pMessages = Stream<Message>()
-    private val scope = CoroutineScope(Dispatchers.Default) {}
+
     override val messages: ListenableStream<Message>
         get() = pMessages
 
     init {
+//        bot.startGettingOfUpdatesByLongPolling {
+//            println(it) // will be printed each update
+//        }
         bot.longPolling {
+            val scope = CoroutineScope(Dispatchers.Default) {}
             textMessages().subscribe(scope) {
-                if(isLoggingEnabled){
-                    logger.info("New message: $it")
+                logger.logErrorSuspend {
+                    if(isLoggingEnabled){
+                        logger.info("New message: $it")
+                    }
+                    pMessages.add(it.toAppMessage())
                 }
-                pMessages.add(it.toAppMessage())
-
             }
         }
     }

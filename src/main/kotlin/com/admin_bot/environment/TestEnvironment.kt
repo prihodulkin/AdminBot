@@ -77,7 +77,7 @@ class TestEnvironment(
         verificationEmailSender = MockVerificationEmailSender(serverConfig)
         otpStorage = MockOtpStorage(mockDatabase)
         emailVerifier = EmailVerifier(verificationEmailSender, otpStorage, serverConfig)
-        botFactory = MockBotFactory(mockOnMessageActionLogger, mockDatabase)
+        botFactory = customBotFactory ?: MockBotFactory(mockOnMessageActionLogger, mockDatabase)
         classifierRepository = MockSingleClassifierRepository()
         botInfoRepository = MockBotInfoRepository(mockDatabase)
         botsManager = BotsManager(

@@ -20,5 +20,6 @@ class ResponseText {
         }
         const val emailWasConfirmed = "Email was confirmed"
         const val incorrectOtp = "Incorrect otp was sent"
+        const val configChangeSuccess = "Bot configuration was changed with success"
     }
 }

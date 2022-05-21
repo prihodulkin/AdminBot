@@ -194,11 +194,12 @@ class RegistrationCompleteTest : AppTestRunner() {
         assertEquals(HttpStatusCode.BadRequest, response.status)
         assertEquals(ResponseText.incorrectOtp, response.bodyAsText())
     }
-
-    private suspend fun getAccessToken(client: HttpClient, loginParams: LoginParams): String{
-       return client.post("/login") {
-            contentType(ContentType.Application.Json)
-            setBody(loginParams)
-        }.body<AuthTokens>().accessToken
-    }
 }
+
+suspend fun getAccessToken(client: HttpClient, loginParams: LoginParams): String {
+    return client.post("/login") {
+        contentType(ContentType.Application.Json)
+        setBody(loginParams)
+    }.body<AuthTokens>().accessToken
+}
+

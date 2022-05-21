@@ -1,10 +1,13 @@
 package com.admin_bot.features
 
+import com.admin_bot.config.ResponseText
+import com.admin_bot.createJsonClient
 import com.admin_bot.environment.TestEnvironment
 import com.admin_bot.features.bot.model.OnMessageActionType
 import com.admin_bot.features.bot_managing.data.BotActionConfig
 import com.admin_bot.features.bot_managing.data.BotActionConfigChange
 import com.admin_bot.features.bot_managing.data.BotInfo
+import com.admin_bot.features.login.data.LoginParams
 import com.admin_bot.features.messages.data.Message
 import com.admin_bot.plugins.mocks.MockGlobals
 import com.admin_bot.plugins.mocks.database.MockDatabase
@@ -12,13 +15,15 @@ import com.admin_bot.plugins.mocks.model.bot.MockBanAction
 import com.admin_bot.plugins.mocks.model.bot.MockDeleteAction
 import com.admin_bot.plugins.mocks.model.bot.MockMessageReceiver
 import com.admin_bot.runner.AppTestRunner
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import io.ktor.http.*
 import io.ktor.server.testing.*
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import org.junit.Test
-import kotlin.random.Random.Default.nextLong
 import kotlin.test.assertEquals
 
 class BotMangingTest : AppTestRunner() {
@@ -65,9 +70,6 @@ class BotMangingTest : AppTestRunner() {
         val testEnvironment = TestEnvironment(mockDatabase)
         val logger = testEnvironment.mockOnMessageActionLogger
         val action = MockDeleteAction(botInfo, logger)
-        application {
-            runWithTestEnvironment(mockDatabase)
-        }
         // add good message and check that delete action wasn't executed
         delay(10L)
         mockMessageReceiver.addMessage(goodMessage)
@@ -104,9 +106,6 @@ class BotMangingTest : AppTestRunner() {
         val testEnvironment = TestEnvironment(mockDatabase)
         val logger = testEnvironment.mockOnMessageActionLogger
         val action = MockDeleteAction(botInfo, logger)
-        application {
-            runWithTestEnvironment(mockDatabase)
-        }
         // add bad message and check that delete action was executed
         delay(10L)
         mockMessageReceiver.addMessage(badMessage)
@@ -151,10 +150,6 @@ class BotMangingTest : AppTestRunner() {
         val testEnvironment = TestEnvironment(mockDatabase)
         val logger = testEnvironment.mockOnMessageActionLogger
         val deleteAction = MockDeleteAction(botInfo, logger)
-        application {
-            runWithTestEnvironment(mockDatabase)
-        }
-
         // add bad message and check that delete action was executed
         delay(10L)
         mockMessageReceiver.addMessage(badMessage)
@@ -203,9 +198,6 @@ class BotMangingTest : AppTestRunner() {
         val testEnvironment = TestEnvironment(mockDatabase)
         val logger = testEnvironment.mockOnMessageActionLogger
         val deleteAction = MockDeleteAction(botInfo, logger)
-        application {
-            runWithTestEnvironment(mockDatabase)
-        }
         val badMessageChat1 =
             Message(
                 text = "simple text $classifierSubstringValue",
@@ -286,9 +278,6 @@ class BotMangingTest : AppTestRunner() {
         )
         val testEnvironment = TestEnvironment(mockDatabase)
         val logger = testEnvironment.mockOnMessageActionLogger
-        application {
-            runWithTestEnvironment(mockDatabase)
-        }
         delay(10)
         coroutineScope {
             for (i in 1..200) {
@@ -302,4 +291,51 @@ class BotMangingTest : AppTestRunner() {
         assertEquals(200, logger.loggedItems.size)
     }
 
+    @Test
+    fun testBotManagingRoute() = testApplication {
+        val botInfo = BotInfo(
+            id = 1,
+            token = "token",
+            actionConfig = BotActionConfig(
+                enabled = false,
+                universalActionType = OnMessageActionType.DELETE
+            )
+        )
+        val mockDatabase = MockDatabase(
+            bots = mutableListOf(
+                botInfo
+            ),
+            botPasswords = mutableMapOf(1L to "Qwerty123"),
+        )
+        val testEnvironment = TestEnvironment(mockDatabase, useMockAuthTokens = false)
+        application {
+            run(testEnvironment)
+        }
+        val client = createJsonClient()
+        val accessToken = getAccessToken(client, LoginParams(token = "token", password = "Qwerty123"))
+        val response = client.post("/bot/config") {
+            header(HttpHeaders.Authorization, "Bearer $accessToken")
+            contentType(ContentType.Application.Json)
+            setBody(
+                BotActionConfigChange(
+                    enabled = true,
+                    universalActionType = OnMessageActionType.REPLY,
+                    replyText = "text"
+                )
+            )
+        }
+        assertEquals(HttpStatusCode.OK, response.status)
+        assertEquals(ResponseText.configChangeSuccess, response.bodyAsText())
+        delay(10L)
+        val changedBot = BotInfo(
+            id = 1,
+            token = "token",
+            actionConfig = BotActionConfig(
+                enabled = true,
+                universalActionType = OnMessageActionType.REPLY,
+                replyText = "text"
+            )
+        )
+        assertEquals(mockDatabase.bots, mutableListOf(changedBot))
+    }
 }

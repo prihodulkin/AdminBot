@@ -44,6 +44,8 @@ dependencies {
     implementation ("net.axay:simplekotlinmail-client:1.4.0")
     implementation ("dev.inmo:tgbotapi:1.1.0")
     implementation ("io.github.microutils:kotlin-logging-jvm:2.1.20")
+    implementation("io.ktor:ktor-network:$ktor_version")
+    implementation("com.lordcodes.turtle:turtle:0.5.0")
 
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")

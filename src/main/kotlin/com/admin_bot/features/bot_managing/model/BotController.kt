@@ -1,7 +1,9 @@
 package com.admin_bot.features.bot_managing.model
 
 import com.admin_bot.common.async.ListenableStream
+import com.admin_bot.common.logging.logAction
 import com.admin_bot.common.logging.logError
+import com.admin_bot.common.logging.logMessage
 import com.admin_bot.features.bot.model.OnMessageActionType
 import com.admin_bot.features.bot.model.OnMessageActionsFactory
 import com.admin_bot.features.bot_managing.data.BotActionConfig
@@ -18,18 +20,21 @@ class BotController(
     private val classifierRepository: ClassifierRepository,
     private var classifier: Classifier,
     private val logger: Logger,
+    private val loggingEnabled: Boolean = false,
     messagesStream: ListenableStream<Message>,
     configStream: ListenableStream<BotActionConfigChange>,
 ) {
 
     private val configSubscription = configStream.listen {
         logger.logError {
+            if (loggingEnabled) {
+                logger.logMessage(event)
+            }
             val newActionConfig = event.apply(actionConfig)
             if (newActionConfig.classifierType != actionConfig.classifierType) {
                 classifier = classifierRepository.getClassifier(newActionConfig.classifierType, botId)
             }
             actionConfig = newActionConfig
-
         }
     }
 
@@ -55,6 +60,9 @@ class BotController(
             val action = actionsFactory.getAction(actionType)
             logger.logError {
                 action.execute(message, actionConfig)
+                if (loggingEnabled) {
+                    logger.logAction(action, message)
+                }
             }
         }
     }

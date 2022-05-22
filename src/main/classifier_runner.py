@@ -25,9 +25,9 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 print(f'{SCRIPT}: message: {message}')
                 if message == 'hi':
                     conn.sendall(f'{message}\n'.encode())
-                elif message == 'by':
+                elif message == 'bye':
                     conn.sendall(f'{message}\n'.encode())
                     break
                 else:
-                    res = True if 'qwerty' in message else False
+                    res = False if 'qwerty' in message else True
                     conn.sendall(f'{str(res)}\n'.encode())

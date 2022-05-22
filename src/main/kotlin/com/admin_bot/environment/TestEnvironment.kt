@@ -35,6 +35,7 @@ class TestEnvironment(
     val useMockAuthTokens: Boolean = true,
     mockServerConfig: ServerConfig? = null,
     customBotFactory: BotFactory? = null,
+    customClassifierRepository: ClassifierRepository? = null,
 ) : AppEnvironment() {
     companion object {
         val defaultMockServerConfig = ServerConfig(
@@ -78,7 +79,7 @@ class TestEnvironment(
         otpStorage = MockOtpStorage(mockDatabase)
         emailVerifier = EmailVerifier(verificationEmailSender, otpStorage, serverConfig)
         botFactory = customBotFactory ?: MockBotFactory(mockOnMessageActionLogger, mockDatabase)
-        classifierRepository = MockSingleClassifierRepository()
+        classifierRepository = customClassifierRepository?: MockSingleClassifierRepository()
         botInfoRepository = MockBotInfoRepository(mockDatabase)
         botsManager = BotsManager(
             botInfoRepository = botInfoRepository,

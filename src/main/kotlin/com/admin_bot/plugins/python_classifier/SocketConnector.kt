@@ -1,4 +1,4 @@
-package com.admin_bot.plugins.python_model_runner
+package com.admin_bot.plugins.python_classifier
 
 import com.admin_bot.features.classification.data.ClassifierType
 import com.lordcodes.turtle.ShellLocation
@@ -6,11 +6,13 @@ import com.lordcodes.turtle.shellRun
 import io.ktor.network.selector.*
 import io.ktor.network.sockets.*
 import io.ktor.utils.io.*
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
-class ModelSocketConnector(
+class SocketConnector(
     private val modelPath: String,
     private val port: Int,
     private val classifierType: ClassifierType
@@ -25,29 +27,29 @@ class ModelSocketConnector(
             modelPath: String,
             port: Int,
             classifierType: ClassifierType
-        ): ModelSocketConnector {
-            val connector = ModelSocketConnector(modelPath, port, classifierType)
+        ): SocketConnector {
+            val connector = SocketConnector(modelPath, port, classifierType)
             while (!connector.establishConnection()) {
             }
             return connector
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     suspend fun establishConnection(): Boolean {
-        val projectPath =  System.getProperty("user.dir")
+        val projectPath = System.getProperty("user.dir")
         val shellLocation = ShellLocation.HOME.resolve("$projectPath/src/main/")
-        val res = shellRun(
-            "python",
-            listOf(
-                "model_runner.py",
-                port.toString(),
-                classifierType.name,
-                modelPath
-            ), shellLocation
-        )
-        delay(1000)
-        // TODO удалить или использовать логгер
-        println(res)
+        GlobalScope.launch {
+            shellRun(
+                "python",
+                listOf(
+                    "classifier_runner.py",
+                    port.toString(),
+                    classifierType.name,
+                    modelPath
+                ), shellLocation
+            )
+        }
         socket = aSocket(selectorManager).tcp().connect("127.0.0.1", port)
         sendChannel = socket.openWriteChannel(autoFlush = true)
         sendChannel.writeStringUtf8("hi")

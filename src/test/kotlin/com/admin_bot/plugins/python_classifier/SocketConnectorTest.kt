@@ -7,12 +7,10 @@ import com.lordcodes.turtle.shellRun
 import io.ktor.network.selector.*
 import io.ktor.network.sockets.*
 import io.ktor.utils.io.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import kotlinx.datetime.Clock
 import org.junit.Test
+import java.net.ServerSocket
 import kotlin.test.assertEquals
 
 class SocketConnectorTest {

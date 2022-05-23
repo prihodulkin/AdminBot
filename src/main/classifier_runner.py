@@ -23,11 +23,11 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             else:
                 message = data.decode('utf-8')
                 print(f'{SCRIPT}: message: {message}')
-                if message == 'hi':
-                    conn.sendall(f'{message}\n'.encode())
-                elif message == 'bye':
-                    conn.sendall(f'{message}\n'.encode())
-                    break
-                else:
-                    res = False if 'qwerty' in message else True
-                    conn.sendall(f'{str(res)}\n'.encode())
+                match message:
+                    case "hi":
+                        conn.sendall(f'{message}\n'.encode())
+                    case 'bye':
+                        conn.sendall(f'{message}\n'.encode())
+                    case _:
+                        res = False if 'qwerty' in message else True
+                        conn.sendall(f'{str(res)}\n'.encode())
